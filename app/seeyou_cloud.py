@@ -1,4 +1,4 @@
-from model import Contest, ContestClass, Contestant, Pilot, Task
+from app.model import Contest, ContestClass, Contestant, Pilot, Task
 
 import requests
 from datetime import datetime
