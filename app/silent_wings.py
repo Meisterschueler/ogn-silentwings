@@ -13,11 +13,11 @@ def get_active_contests():
         result_string += "{{datadelay}}{0}{{/datadelay}}".format(15)
         result_string += "{{utcoffset}}{0}{{/utcoffset}}".format("+01:00")
         result_string += "{{countrycode}}{0}{{/countrycode}}".format(contest.country)
-        result_string += "{{site}}{0}{{/site}}".format("St. Auban")
+        result_string += "{{site}}{0}{{/site}}".format(contest.location.name)
         result_string += "{{fromdate}}{0}{{/fromdate}}".format(contest.start_date.strftime("%Y%m%d"))
         result_string += "{{todate}}{0}{{/todate}}".format(contest.end_date.strftime("%Y%m%d"))
-        result_string += "{{lat}}{0}{{/lat}}".format(44.1959)
-        result_string += "{{lon}}{0}{{/lon}}".format(5.98849)
-        result_string += "{{alt}}{0}{{/alt}}".format("")
+        result_string += "{{lat}}{0}{{/lat}}".format(contest.location.latitude)
+        result_string += "{{lon}}{0}{{/lon}}".format(contest.location.longitude)
+        result_string += "{{alt}}{0}{{/alt}}".format(contest.location.altitude if contest.location.altitude is not None else '')
 
     return result_string

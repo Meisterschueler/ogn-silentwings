@@ -4,7 +4,7 @@ from datetime import date
 
 from app import create_app, db
 from app.silent_wings import get_active_contests
-from app.model import Contest
+from app.model import Contest, Location
 
 
 class TestDB(unittest.TestCase):
@@ -31,10 +31,20 @@ class TestDB(unittest.TestCase):
         contest.end_date = date(2005, 9, 12)
         contest.featured = None
         contest.start_date = date(2005, 9, 3)
-        contest.time_zone = "+01:00"
+        contest.time_zone = None
+
+        location = Location()
+        location.name = "St. Auban"
+        location.country = "FR"
+        location.latitude = 44.1959
+        location.longitude = 5.98849
+        location.altitude = None
+
+        contest.location = location
 
         # Put the contest into the database
         db.session.add(contest)
+        db.session.add(location)
         db.session.commit()
 
         # Check if the string for silent wings is correct
