@@ -83,5 +83,3 @@ def getactivecontests():
   # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
 
   return get_active_contests()
-  
-  # return "{contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}{countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}{todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}"
