@@ -1,4 +1,4 @@
-from app.model import Contest, ContestClass, Contestant, Pilot, Task
+from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location
 
 import requests
 from datetime import datetime
@@ -57,6 +57,17 @@ def document_to_objects(document, client_id, secret):
                                 'start_date': datetime.strptime(contest_row['start_date'], "%Y-%m-%d"),
                                 'time_zone': contest_row['time_zone']}
                 contest = Contest(**contest_dict)
+
+                location_row = contest_row['location']
+                location_dict = {'altitude': location_row['altitude'],
+                                 'country': location_row['country'],
+                                 'latitude': location_row['latitude'],
+                                 'longitude': location_row['longitude'],
+                                 'name': location_row['name'],
+                                 'time_zone': location_row['time_zone']}
+                location = Location(**location_dict)
+                contest.location = location
+                objects.append(location)
 
                 for contest_class_row in contest_row['classes']:
                     contest_class_dict = {'category': contest_class_row['category'],
