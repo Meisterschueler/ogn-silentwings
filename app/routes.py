@@ -12,32 +12,6 @@ from logging.handlers import RotatingFileHandler
 # Following Sections provides the Silent Wings Viewer interface
 #########################
 
-# getactivecontests.php
-@app.route("/getactivecontests.php")
-def getactivecontests():
-  username = request.args.get('username', type = str)
-  cpassword = request.args.get('cpassword', type = str)
-  version = request.args.get('version', type=str)
-
-  app.logger.error('getactivecontests.php was called: username = %s version = %s',username,version)
-
-  return "{contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}{countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}{todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}"
-
-  # Parameters
-  # username=<user name>
-  # cpassword=<encrypted password>
-  # version=<version number>
-
-  # Example request by SWV
-  # GET /getactivecontests.php?username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&version=1.3 HTTP/1.1
-
-  # Expected return by SWV
-  # {contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}
-  # {countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}
-  # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
-
-
-
 # getcontestinfo.php
 @app.route("/getcontestinfo.php")
 @app.route("/getcontestinfo")

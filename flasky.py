@@ -75,7 +75,7 @@ def getactivecontests():
   # Example request by SWV:
   # GET /getactivecontests.php?username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&version=1.3 HTTP/1.1
 
-  app.logger.error('getactivecontests.php was called: username = %s version = %s',username,version)
+  # app.logger.error('getactivecontests.php was called: username = %s version = %s',username,version)
   
   # Expected return by SWV:
   # {contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}
