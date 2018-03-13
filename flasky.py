@@ -34,12 +34,8 @@ def test():
 @app.cli.command()
 def import_naviter():
     """Import data from SeeYou Cloud."""
-    print('moin moin!')
     document = get_naviter_document(url=app.config['NAVITER_BASE_URL'], client_id=app.config['NAVITER_CLIENT_ID'], secret=app.config['NAVITER_SECRET'])
     objects = document_to_objects(document, client_id=app.config['NAVITER_CLIENT_ID'], secret=app.config['NAVITER_SECRET'])
-    for o in objects:
-       print(o)
-
     db.session.add_all(objects)
     db.session.commit()
 
