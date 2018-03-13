@@ -1,3 +1,4 @@
+# flake8: noqa
 from app import app
 from flask import request,jsonify, send_file
 
@@ -16,28 +17,28 @@ from logging.handlers import RotatingFileHandler
 @app.route("/getcontestinfo.php")
 @app.route("/getcontestinfo")
 def getcontestinfo():
-  username = request.args.get('username', type = str)
-  cpassword = request.args.get('cpassword', type = str)
-  contestname = request.args.get('contestname', type = str)
-  date = request.args.get('date', type = str)
-  app.logger.error('getcontestinfo.php was called: usernmae = %s contestname = %s date = %s',username,contestname,date)
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    contestname = request.args.get('contestname', type = str)
+    date = request.args.get('date', type = str)
+    app.logger.error('getcontestinfo.php was called: usernmae = %s contestname = %s date = %s',username,contestname,date)
 
-  if 'username' in request.args:
-    app.logger.error('Username was provided in URL')
-    pass # do something
-
-
-  if 'date' in request.args:
-    app.logger.error('Date was provided in URL; Should return CUC file')
-    # return CUC file
-    # Call function, which creates CUC file here
-    # pass 
-    return send_file(gencuc(), attachment_filename='CUC_temp.cuc')
+    if 'username' in request.args:
+        app.logger.error('Username was provided in URL')
+        pass # do something
 
 
-  return "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
-	{date}20050907{/date}{task}1{/task}{validday}0{/validday}{date}20050909{/date}{task}1{/task}{validday}1{/validday}\
-	{date}20050910{/date}{task}1{/task}{validday}1{/validday}{date}20050911{/date}{task}1{/task}{validday}1{/validday}"
+    if 'date' in request.args:
+        app.logger.error('Date was provided in URL; Should return CUC file')
+        # return CUC file
+        # Call function, which creates CUC file here
+        # pass 
+        return send_file(gencuc(), attachment_filename='CUC_temp.cuc')
+
+
+    return "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
+    {date}20050907{/date}{task}1{/task}{validday}0{/validday}{date}20050909{/date}{task}1{/task}{validday}1{/validday}\
+    {date}20050910{/date}{task}1{/task}{validday}1{/validday}{date}20050911{/date}{task}1{/task}{validday}1{/validday}"
 
 
   # Parameters
@@ -65,21 +66,21 @@ def getcontestinfo():
 # GetBannerInfo
 @app.route("/getbannerinfo.php")
 def getbannerinfo():
-  # Example call 
-  # GET /getbannerinfo.php HTTP/1.0
-  return # do something
+    # Example call 
+    # GET /getbannerinfo.php HTTP/1.0
+    return # do something
 
 # gettrackerdata.php
 @app.route("/gettrackerdata.php")
 def gettrackerdata():
-  querytype = request.args.get('querytype', type = str)
-  contestname = request.args.get('contestname', type = str)
-  trackerid = request.args.get('trackerid', type = str)
-  username = request.args.get('username', type = str)
-  cpassword = request.args.get('cpassword', type = str)
-  starttime = request.args.get('starttime', type = str)
-  endtime = request.args.get('endtime', type = str)
-  compression = request.args.get('compression', type = str)
+    querytype = request.args.get('querytype', type = str)
+    contestname = request.args.get('contestname', type = str)
+    trackerid = request.args.get('trackerid', type = str)
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    starttime = request.args.get('starttime', type = str)
+    endtime = request.args.get('endtime', type = str)
+    compression = request.args.get('compression', type = str)
 
   # GET /gettrackerdata.php?querytype=getintfixes&contestname=FAIGP2005&trackerid=FLRDDA646&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&starttime=20050911000001&endtime=20050911235959&compression=gzip HTTP/1.0
 
