@@ -44,7 +44,8 @@ def get_naviter_document(url, client_id, secret):
     return document
 
 
-def document_to_objects(document, client_id, secret):
+def get_naviter_document_as_objects(url, client_id, secret):
+    document = get_naviter_document(url, client_id, secret)
     objects = list()
     for item in document.items():
         if item[0] == "contests":

@@ -5,22 +5,24 @@ from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
 from app.silent_wings import get_active_contests
-from app.seeyou_cloud import get_naviter_document,document_to_objects
+from app.seeyou_cloud import get_naviter_document_as_objects
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
 
-@app.cli.command()
-def create_all():
-    """Create the db."""
-    db.create_all()
 
 @app.shell_context_processor
 def make_shell_context():
     return dict(app=app, db=db,
                 Contest=Contest, ContestClass=ContestClass,
                 Contestant=Contestant, Pilot=Pilot, Task=Task)
+
+
+@app.cli.command()
+def create_all():
+    """Create the db."""
+    db.create_all()
 
 
 @app.cli.command()
@@ -34,11 +36,11 @@ def test():
 @app.cli.command()
 def import_naviter():
     """Import data from SeeYou Cloud."""
-    document = get_naviter_document(url=app.config['NAVITER_BASE_URL'], client_id=app.config['NAVITER_CLIENT_ID'], secret=app.config['NAVITER_SECRET'])
-    objects = document_to_objects(document, client_id=app.config['NAVITER_CLIENT_ID'], secret=app.config['NAVITER_SECRET'])
+    objects = get_naviter_document_as_objects(url=app.config['NAVITER_BASE_URL'],
+                                              client_id=app.config['NAVITER_CLIENT_ID'],
+                                              secret=app.config['NAVITER_SECRET'])
     db.session.add_all(objects)
     db.session.commit()
-
 
 
 @app.cli.command()
@@ -62,24 +64,25 @@ def aprs_connect():
 
     client.disconnect()
 
+
 @app.route("/getactivecontests.php")
 def getactivecontests():
-  # Parameters:
-  # username=<user name>
-  # cpassword=<encrypted password>
-  # version=<version number>
-  username = request.args.get('username', type = str)
-  cpassword = request.args.get('cpassword', type = str)
-  version = request.args.get('version', type=str)
+    # Parameters:
+    # username=<user name>
+    # cpassword=<encrypted password>
+    # version=<version number>
+    username = request.args.get('username', type=str)
+    cpassword = request.args.get('cpassword', type=str)
+    version = request.args.get('version', type=str)
 
-  # Example request by SWV:
-  # GET /getactivecontests.php?username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&version=1.3 HTTP/1.1
+    # Example request by SWV:
+    # GET /getactivecontests.php?username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&version=1.3 HTTP/1.1
 
-  # app.logger.error('getactivecontests.php was called: username = %s version = %s',username,version)
-  
-  # Expected return by SWV:
-  # {contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}
-  # {countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}
-  # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
+    # app.logger.error('getactivecontests.php was called: username = %s version = %s',username,version)
 
-  return get_active_contests()
+    # Expected return by SWV:
+    # {contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}
+    # {countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}
+    # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
+
+    return get_active_contests()

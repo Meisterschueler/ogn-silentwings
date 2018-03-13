@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from app import create_app, db
-from app.seeyou_cloud import get_naviter_document, document_to_objects
+from app.seeyou_cloud import get_naviter_document, get_naviter_document_as_objects
 
 
 class root_document:
@@ -39,7 +39,7 @@ class TestDB(unittest.TestCase):
         self.app_context.pop()
 
     @mock.patch('app.seeyou_cloud.requests')
-    def test_local(self, requests_mock):
+    def test_local_document(self, requests_mock):
         requests_mock.get.side_effect = [root_document,
                                          contestant_document, task_document,
                                          contestant_document, no_task_document]
@@ -47,15 +47,25 @@ class TestDB(unittest.TestCase):
         document = get_naviter_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
         print(document)
 
-        objects = document_to_objects(document, client_id=self.client_id, secret=self.secret)
+    @mock.patch('app.seeyou_cloud.requests')
+    def test_local_objects(self, requests_mock):
+        requests_mock.get.side_effect = [root_document,
+                                         contestant_document, task_document,
+                                         contestant_document, no_task_document]
+
+        objects = get_naviter_document_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
         for competition in objects:
             print(competition)
 
-    def test_remote(self):
+        db.session.add_all(objects)
+        db.session.commit()
+
+    def test_remote_document(self):
         document = get_naviter_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
         print(document)
 
-        objects = document_to_objects(document, client_id=self.client_id, secret=self.secret)
+    def test_remote_objects(self):
+        objects = get_naviter_document_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
         for o in objects:
             print(o)
 

@@ -25,7 +25,7 @@ class TestDB(unittest.TestCase):
 
         # Create simple contest
         contest = Contest()
-        contest.name = 'My Fake Contest'
+        contest.name = "My Fake Contest"
         contest.category = None
         contest.country = "FR"
         contest.end_date = date(2005, 9, 12)
@@ -49,7 +49,18 @@ class TestDB(unittest.TestCase):
 
         # Check if the string for silent wings is correct
         message = get_active_contests()
-        self.assertEqual(message, "{contestname}MYFAKECONTEST{/contestname}{contestdisplayname}My Fake Contest{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}{countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}{todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}")
+        silent_wings_string = ("{contestname}MYFAKECONTEST{/contestname}"
+                               "{contestdisplayname}My Fake Contest{/contestdisplayname}"
+                               "{datadelay}15{/datadelay}"
+                               "{utcoffset}+01:00{/utcoffset}"
+                               "{countrycode}FR{/countrycode}"
+                               "{site}St. Auban{/site}"
+                               "{fromdate}20050903{/fromdate}"
+                               "{todate}20050912{/todate}"
+                               "{lat}44.1959{/lat}"
+                               "{lon}5.98849{/lon}"
+                               "{alt}{/alt}")
+        self.assertEqual(message, silent_wings_string)
 
 
 if __name__ == '__main__':
