@@ -4,8 +4,8 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import get_active_contests
-from app.seeyou_cloud import get_naviter_document_as_objects
+from app.silent_wings import create_active_contests_string
+from app.seeyou_cloud import get_seeyou_cloud_contests_as_objects
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -34,11 +34,11 @@ def test():
 
 
 @app.cli.command()
-def import_naviter():
+def import_seeyou_cloud():
     """Import data from SeeYou Cloud."""
-    objects = get_naviter_document_as_objects(url=app.config['NAVITER_BASE_URL'],
-                                              client_id=app.config['NAVITER_CLIENT_ID'],
-                                              secret=app.config['NAVITER_SECRET'])
+    objects = get_seeyou_cloud_contests_as_objects(url=app.config['NAVITER_BASE_URL'],
+                                                   client_id=app.config['NAVITER_CLIENT_ID'],
+                                                   secret=app.config['NAVITER_SECRET'])
     db.session.add_all(objects)
     db.session.commit()
 
@@ -66,7 +66,7 @@ def aprs_connect():
 
 
 @app.route("/getactivecontests.php")
-def getactivecontests():
+def route_getactivecontests():
     # Parameters:
     # username=<user name>
     # cpassword=<encrypted password>
@@ -85,4 +85,4 @@ def getactivecontests():
     # {countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}
     # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
 
-    return get_active_contests()
+    return create_active_contests_string()

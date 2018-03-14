@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from app import create_app, db
-from app.seeyou_cloud import get_naviter_document, get_naviter_document_as_objects
+from app.seeyou_cloud import get_naviter_document, get_seeyou_cloud_contests_as_objects
 
 
 class root_document:
@@ -53,9 +53,9 @@ class TestDB(unittest.TestCase):
                                          contestant_document, task_document,
                                          contestant_document, no_task_document]
 
-        objects = get_naviter_document_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        for competition in objects:
-            print(competition)
+        objects = get_seeyou_cloud_contests_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        for o in objects:
+            print(o)
 
         db.session.add_all(objects)
         db.session.commit()
@@ -65,7 +65,7 @@ class TestDB(unittest.TestCase):
         print(document)
 
     def test_remote_objects(self):
-        objects = get_naviter_document_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        objects = get_seeyou_cloud_contests_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
         for o in objects:
             print(o)
 

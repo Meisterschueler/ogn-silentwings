@@ -2,7 +2,7 @@ from app.model import Contest
 from app import db
 
 
-def get_active_contests():
+def create_active_contests_string():
     result_string = ""
     for contest in db.session.query(Contest):
         short_name = contest.name.replace(" ", "").upper()

@@ -19,7 +19,7 @@ def process_beacon(raw_message, reference_date=None):
             print(e)
             return None
 
-        if message['aprs_type'] == 'status' or message['beacon_type'] == ['receiver_beacon']:
+        if message['aprs_type'] == 'status' or message['beacon_type'] == 'receiver_beacon':
             return None
         else:
             subset_message = {k: message[k] for k in message.keys() & {'name', 'address', 'timestamp', 'latitude', 'longitude', 'altitude', 'track', 'ground_speed', 'climb_rate', 'turn_rate'}}

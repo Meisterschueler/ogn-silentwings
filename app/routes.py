@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # flake8: noqa
 from app import app
 from flask import request,jsonify, send_file

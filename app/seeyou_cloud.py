@@ -44,7 +44,7 @@ def get_naviter_document(url, client_id, secret):
     return document
 
 
-def get_naviter_document_as_objects(url, client_id, secret):
+def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
     document = get_naviter_document(url, client_id, secret)
     objects = list()
     for item in document.items():
@@ -107,6 +107,8 @@ def get_naviter_document_as_objects(url, client_id, secret):
 
                             objects.append(pilot)
 
+                        objects.append(contestant)
+
                     tasks_doc = get_naviter_document(contest_class_row.links['tasks'].url, client_id, secret)
                     print(tasks_doc)
                     if 'code' in tasks_doc and tasks_doc['code'] == 404:
@@ -129,7 +131,6 @@ def get_naviter_document_as_objects(url, client_id, secret):
                             task.contest_class = contest_class
                             objects.append(task)
 
-                    objects.append(contestant)
-
                 objects.append(contest)
+
     return objects

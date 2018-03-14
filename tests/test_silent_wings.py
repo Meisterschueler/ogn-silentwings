@@ -3,7 +3,7 @@ import unittest
 from datetime import date
 
 from app import create_app, db
-from app.silent_wings import get_active_contests
+from app.silent_wings import create_active_contests_string
 from app.model import Contest, Location
 
 
@@ -48,7 +48,7 @@ class TestDB(unittest.TestCase):
         db.session.commit()
 
         # Check if the string for silent wings is correct
-        message = get_active_contests()
+        message = create_active_contests_string()
         silent_wings_string = ("{contestname}MYFAKECONTEST{/contestname}"
                                "{contestdisplayname}My Fake Contest{/contestdisplayname}"
                                "{datadelay}15{/datadelay}"
