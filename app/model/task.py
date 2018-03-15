@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, DateTime, Date, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from app import db
 
@@ -11,7 +11,7 @@ class Task(db.Model):
     no_start = Column(DateTime)
     result_status = Column(String)
     start_on_entry = Column(Boolean)
-    task_date = Column(String)
+    task_date = Column(Date)
     task_distance = Column(Float)
     task_distance_max = Column(Float)
     task_distance_min = Column(Float)

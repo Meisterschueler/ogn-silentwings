@@ -119,7 +119,7 @@ def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
                                          'no_start': datetime.strptime(task_row['no_start'], "%Y-%m-%dT%H:%M:%S"),
                                          'result_status': task_row['result_status'],
                                          'start_on_entry': task_row['start_on_entry'],
-                                         'task_date': task_row['task_date'],
+                                         'task_date': datetime.strptime(task_row['task_date'], "%Y-%m-%d"),
                                          'task_distance': task_row['task_distance'],
                                          'task_distance_max': task_row['task_distance_max'],
                                          'task_distance_min': task_row['task_distance_min'],
