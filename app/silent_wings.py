@@ -6,9 +6,8 @@ def create_active_contests_string():
     result_string = ""
     for contest in db.session.query(Contest):
         for contest_class in contest.classes:
-            # TODO: What happens if contest_class has underscore? Replace?
-	    short_name = contest.name.replace(" ", "").upper() + "_" + contest_class
-            long_name = contest.name
+	    short_name = contest.name.replace(" ", "").upper() + "_" + contest_class.replace("_","")
+            long_name = contest.name + " " + contest_class
             result_string += "{{contestname}}{0}{{/contestname}}".format(short_name)
 	    result_string += "{{contestdisplayname}}{0}{{/contestdisplayname}}".format(long_name)
       	    result_string += "{{datadelay}}{0}{{/datadelay}}".format(15)
@@ -27,8 +26,8 @@ def create_active_contests_string():
 # GET /getcontestinfo?contestname=LIVE&date=20171104&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c HTTP/1.1
 def get_contest_info(contest_name_class):
     result_string = ""
-    for contest_name_class in db.session.query(Contest).filter_by(Contest.name==contest_name_class.rsplit("_")):
-	for contest_class_day in db.session.query(Contest).filter_by(Contest.name==contest_name).filter_by(Contest.contest_class):
+    for contest_name_class in db.session.query(Contest).filter_by(Contest.name==contest_name_class.lsplit("_")):
+	for contest_class_day in Contest.contest_name_class:
 		result_string += "{{date}}{0}{{/date}}".format(contest_class_day)
 	        result_string += "{{task}}{0}{{/task}}".format("1")
 	        result_string += "{{validday}}{0}{{/validday}}".format("1")
