@@ -1,4 +1,4 @@
-from app.model import Contest, ContestClass
+from app.model import Contest, ContestClass, Contestant
 from app import db
 
 
@@ -39,3 +39,23 @@ def create_contest_info_string(contest_name_with_class_category):
                 # "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
 
     return result_string
+
+
+def create_cuc_pilots_block():
+    result_list = list()
+    result_list.append("[Pilots]")
+
+    for contestant in db.session.query(Contestant):
+        pilot = contestant.pilots[0]
+
+        entry_dict = {'first_name': pilot.first_name,
+                      'last_name': pilot.last_name,
+                      'live_track_id': contestant.live_track_id,
+                      'aircraft_model': contestant.aircraft_model,
+                      'aircraft_registration': contestant.aircraft_registration,
+                      'contestant_number': contestant.contestant_number}
+
+        entry = '"{first_name}","{last_name}",123,"{live_track_id}","{aircraft_model}","{aircraft_registration}","{contestant_number}","",0,"",0,"",1,"",""'.format(**entry_dict)
+        result_list.append(entry)
+
+    return "\n".join(result_list)
