@@ -4,7 +4,7 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import create_active_contests_string
+from app.silent_wings import create_active_contests_string, create_contest_info_string
 from app.soaringspot import get_soaringspot_contests
 
 
@@ -86,3 +86,25 @@ def route_getactivecontests():
     # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
 
     return create_active_contests_string()
+
+@app.route("/getcontestinfo.php")
+@app.route("/getcontestinfo")
+def route_getcontestinfo():
+    # Parameters:
+    # username=<user name>
+    # cpassword=<encrypted password>
+    # version=<version number>
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    contestname = request.args.get('contestname', type = str)
+    date = request.args.get('date', type = str)
+
+
+
+    if 'date' in request.args:
+        app.logger.error('Date was provided in URL; Should return CUC file')
+        # return CUC file
+        # Call function, which creates CUC file here
+        return ""
+    else:
+        return create_contest_info_string(contestname)
