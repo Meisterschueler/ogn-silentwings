@@ -12,6 +12,7 @@ class Contestant(db.Model):
     club = Column(String)
     contestant_number = Column(String)
     handicap = Column(String)
+    live_track_id = Column(String)
     name = Column(String)
     not_competing = Column(Boolean)
     pure_glider = Column(Boolean)
