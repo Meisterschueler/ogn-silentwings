@@ -64,6 +64,11 @@ def aprs_connect():
 
     client.disconnect()
 
+#########################
+# Following Sections provides the Silent Wings Viewer interface
+# For more details visit http://wiki.silentwings.no/index.php/Tracking_Protocol
+#########################
+
 
 @app.route("/getactivecontests.php")
 def route_getactivecontests():
@@ -93,13 +98,12 @@ def route_getcontestinfo():
     # Parameters:
     # username=<user name>
     # cpassword=<encrypted password>
-    # version=<version number>
+    # contestname=<contest name>
+    # date=<YYYYMMDD>
     username = request.args.get('username', type = str)
     cpassword = request.args.get('cpassword', type = str)
     contestname = request.args.get('contestname', type = str)
     date = request.args.get('date', type = str)
-
-
 
     if 'date' in request.args:
         app.logger.error('Date was provided in URL; Should return CUC file')
@@ -108,3 +112,30 @@ def route_getcontestinfo():
         return ""
     else:
         return create_contest_info_string(contestname)
+
+@app.route("/gettrackerdata.php")
+def route_gettrackerdata():
+    # Parameters:
+    # querytype=getintfixes
+    # contestname=<contest name>
+    # trackerid=<tracker id>
+    # username=<user name>
+    # cpassword=<encrypted password>
+    # starttime=<YYYYMMDDHHMMSS>
+    # endtime=<YYYYMMDDHHMMSS>
+    # compression=<none | gzip>
+    querytype = request.args.get('querytype', type = str)
+    contestname = request.args.get('contestname', type = str)
+    trackerid = request.args.get('trackerid', type = str)
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    starttime = request.args.get('starttime', type = str)
+    endtime = request.args.get('endtime', type = str)
+    compression = request.args.get('compression', type = str)
+
+    return ""
+
+#########################
+# Following Sections provides the Silent Wings Studio interface
+#########################
+
