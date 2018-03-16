@@ -86,6 +86,7 @@ def get_soaringspot_contests(url, client_id, secret):
                                                'club': contestant_row['club'] if 'club' in contestant_row else None,
                                                'contestant_number': contestant_row['contestant_number'],
                                                'handicap': contestant_row['handicap'],
+                                               'live_track_id': contestant_row['live_track_id'],
                                                'name': contestant_row['name'],
                                                'not_competing': contestant_row['not_competing'],
                                                'pure_glider': contestant_row['pure_glider'],
