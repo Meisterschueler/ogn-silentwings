@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 ogn@data-ogn:~/ogn-silentwings/app$ sudo netcat -l 80
 [sudo] password for ogn: 

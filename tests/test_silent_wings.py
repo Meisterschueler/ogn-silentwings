@@ -3,8 +3,9 @@ import unittest
 from datetime import date
 
 from app import create_app, db
-from app.silent_wings import create_active_contests_string, create_contest_info_string
-from app.model import Contest, Location, ContestClass, Task
+from app.silent_wings import create_active_contests_string, create_contest_info_string,\
+    create_cuc_pilots_block
+from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot
 
 
 class TestDB(unittest.TestCase):
@@ -45,6 +46,30 @@ class TestDB(unittest.TestCase):
         open_class.category = "OPEN"
         open_class.contest = contest
 
+        contestant_1 = Contestant()
+        contestant_1.aircraft_model = "ASG 29"
+        contestant_1.aircraft_registration = "D-KONI"
+        contestant_1.contestant_number = "KG"
+        contestant_1.live_track_id = "FLRDD0815"
+        contestant_1.contest_class = open_class
+
+        pilot_1 = Pilot()
+        pilot_1.first_name = "Konstantin"
+        pilot_1.last_name = "Gründger"
+        pilot_1.contestant = contestant_1
+
+        contestant_2 = Contestant()
+        contestant_2.aircraft_model = "ASK 13"
+        contestant_2.aircraft_registration = "D-1900"
+        contestant_2.contestant_number = "XX"
+        contestant_2.live_track_id = "FLRDD4711"
+        contestant_2.contest_class = open_class
+
+        pilot_2 = Pilot()
+        pilot_2.first_name = "Dagobert"
+        pilot_2.last_name = "Duck"
+        pilot_2.contestant = contestant_2
+
         task_1 = Task()
         task_1.task_date = date(2005, 9, 3)
         task_1.contest_class = open_class
@@ -84,6 +109,12 @@ class TestDB(unittest.TestCase):
             "{date}20050904{/date}{task}1{/task}{validday}0{/validday}"
             "{date}20050907{/date}{task}1{/task}{validday}0{/validday}")
         self.assertEqual(message, silent_wings_string)
+
+        message = create_cuc_pilots_block()
+        cuc_pilots_block = ('[Pilots]\n'
+                            '"Konstantin","Gründger",123,"FLRDD0815","ASG 29","D-KONI","KG","",0,"",0,"",1,"",""\n'
+                            '"Dagobert","Duck",123,"FLRDD4711","ASK 13","D-1900","XX","",0,"",0,"",1,"",""')
+        self.assertEqual(message, cuc_pilots_block)
 
 
 if __name__ == '__main__':
