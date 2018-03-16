@@ -137,5 +137,6 @@ def route_gettrackerdata():
 
 #########################
 # Following Sections provides the Silent Wings Studio interface
+# For more details see https://github.com/swingsopen/swtracking/wiki/Tracking-Protocol
 #########################
 
