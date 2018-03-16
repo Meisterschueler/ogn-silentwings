@@ -5,7 +5,7 @@ from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
 from app.silent_wings import create_active_contests_string
-from app.seeyou_cloud import get_seeyou_cloud_contests_as_objects
+from app.soaringspot import get_soaringspot_contests
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -34,12 +34,12 @@ def test():
 
 
 @app.cli.command()
-def import_seeyou_cloud():
-    """Import data from SeeYou Cloud."""
-    objects = get_seeyou_cloud_contests_as_objects(url=app.config['NAVITER_BASE_URL'],
-                                                   client_id=app.config['NAVITER_CLIENT_ID'],
-                                                   secret=app.config['NAVITER_SECRET'])
-    db.session.add_all(objects)
+def import_soaringspot():
+    """Import data from SoaringSpot."""
+    contests = get_soaringspot_contests(url=app.config['SOARINGSPOT_BASE_URL'],
+                                        client_id=app.config['SOARINGSPOT_CLIENT_ID'],
+                                        secret=app.config['SOARINGSPOT_SECRET'])
+    db.session.add_all(contests)
     db.session.commit()
 
 

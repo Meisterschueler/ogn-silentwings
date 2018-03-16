@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 
 
-def check_naviter_time():
+def check_soaringspot_time():
     time_url = 'http://api.soaringspot.com/v1/time'
     r = requests.get(time_url)
     server_time = datetime.strptime(r.headers['X-Server-Time'], '%A, %d-%b-%Y %H:%M:%S %Z')
@@ -15,7 +15,7 @@ def check_naviter_time():
         raise Exception('Local time and server time differ too much')
 
 
-def get_naviter_auth_string(client_id, secret):
+def get_soaringspot_auth_string(client_id, secret):
     import hashlib
     import hmac
     import ssl
@@ -33,10 +33,10 @@ def get_naviter_auth_string(client_id, secret):
     return auth_string
 
 
-def get_naviter_document(url, client_id, secret):
+def get_soaringspot_document(url, client_id, secret):
     from hal_codec import HALCodec
 
-    auth_string = get_naviter_auth_string(client_id, secret)
+    auth_string = get_soaringspot_auth_string(client_id, secret)
     r = requests.get(url, headers={'Authorization': auth_string})
     codec = HALCodec()
     document = codec.load(r.text.encode('utf-8'))
@@ -44,9 +44,9 @@ def get_naviter_document(url, client_id, secret):
     return document
 
 
-def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
-    document = get_naviter_document(url, client_id, secret)
-    objects = list()
+def get_soaringspot_contests(url, client_id, secret):
+    document = get_soaringspot_document(url, client_id, secret)
+    contests = list()
     for item in document.items():
         if item[0] == "contests":
             for contest_row in item[1]:
@@ -68,16 +68,14 @@ def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
                                  'time_zone': location_row['time_zone']}
                 location = Location(**location_dict)
                 contest.location = location
-                objects.append(location)
 
                 for contest_class_row in contest_row['classes']:
                     contest_class_dict = {'category': contest_class_row['category'],
                                           'type': contest_class_row['type']}
                     contest_class = ContestClass(**contest_class_dict)
                     contest_class.contest = contest
-                    objects.append(contest_class)
 
-                    contestants_doc = get_naviter_document(contest_class_row.links['contestants'].url, client_id, secret)
+                    contestants_doc = get_soaringspot_document(contest_class_row.links['contestants'].url, client_id, secret)
                     print(contestants_doc)
                     if 'code' in contestants_doc and contestants_doc['code'] == 404:
                         print("No task")
@@ -105,11 +103,7 @@ def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
                                 pilot = Pilot(**pilot_dict)
                                 pilot.contestant = contestant
 
-                            objects.append(pilot)
-
-                        objects.append(contestant)
-
-                    tasks_doc = get_naviter_document(contest_class_row.links['tasks'].url, client_id, secret)
+                    tasks_doc = get_soaringspot_document(contest_class_row.links['tasks'].url, client_id, secret)
                     print(tasks_doc)
                     if 'code' in tasks_doc and tasks_doc['code'] == 404:
                         print("No task")
@@ -129,8 +123,7 @@ def get_seeyou_cloud_contests_as_objects(url, client_id, secret):
                                          'task_value': task_row['task_value']}
                             task = Task(**task_dict)
                             task.contest_class = contest_class
-                            objects.append(task)
 
-                objects.append(contest)
+                contests.append(contest)
 
-    return objects
+    return contests

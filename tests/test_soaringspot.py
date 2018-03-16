@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from app import create_app, db
-from app.seeyou_cloud import get_naviter_document, get_seeyou_cloud_contests_as_objects
+from app.soaringspot import get_soaringspot_document, get_soaringspot_contests
 
 
 class root_document:
@@ -27,9 +27,9 @@ class TestDB(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
 
-        self.base_url = self.app.config['NAVITER_BASE_URL']
-        self.client_id = self.app.config['NAVITER_CLIENT_ID']
-        self.secret = self.app.config['NAVITER_SECRET']
+        self.base_url = self.app.config['SOARINGSPOT_BASE_URL']
+        self.client_id = self.app.config['SOARINGSPOT_CLIENT_ID']
+        self.secret = self.app.config['SOARINGSPOT_SECRET']
 
         db.create_all()
 
@@ -38,34 +38,43 @@ class TestDB(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    @mock.patch('app.seeyou_cloud.requests')
+    @mock.patch('app.soaringspot.requests')
     def test_local_document(self, requests_mock):
         requests_mock.get.side_effect = [root_document,
                                          contestant_document, task_document,
                                          contestant_document, no_task_document]
 
-        document = get_naviter_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        document = get_soaringspot_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
         print(document)
 
-    @mock.patch('app.seeyou_cloud.requests')
+    @mock.patch('app.soaringspot.requests')
     def test_local_objects(self, requests_mock):
         requests_mock.get.side_effect = [root_document,
                                          contestant_document, task_document,
                                          contestant_document, no_task_document]
 
-        objects = get_seeyou_cloud_contests_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        for o in objects:
-            print(o)
+        contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        for contest in contests:
+            print(contest)
+            print(contest.location)
+            for contest_class in contest.classes:
+                print(contest_class)
+                for task in contest_class.tasks:
+                    print(task)
+                for contestant in contest_class.contestants:
+                    print(contestant)
+                    for pilot in contestant.pilots:
+                        print(pilot)
 
-        db.session.add_all(objects)
+        db.session.add_all(contests)
         db.session.commit()
 
     def test_remote_document(self):
-        document = get_naviter_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        document = get_soaringspot_document(url=self.base_url, client_id=self.client_id, secret=self.secret)
         print(document)
 
     def test_remote_objects(self):
-        objects = get_seeyou_cloud_contests_as_objects(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        objects = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
         for o in objects:
             print(o)
 
