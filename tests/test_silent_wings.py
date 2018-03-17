@@ -28,8 +28,14 @@ def create_simple_contest():
     contest.location = location
 
     open_class = ContestClass()
-    open_class.category = "OPEN"
+    open_class.category = "glider"
+    open_class.type = "Open"
     open_class.contest = contest
+
+    m18_class = ContestClass()
+    m18_class.category = "glider"
+    m18_class.type = "18-meter"
+    m18_class.contest = contest
 
     contestant_1 = Contestant()
     contestant_1.aircraft_model = "ASG 29"
@@ -99,7 +105,19 @@ class TestDB(unittest.TestCase):
         # Check answer to getactivecontests.php
         message = create_active_contests_string()
         silent_wings_string = ("{contestname}MYFAKECONTEST_OPEN{/contestname}"
-                               "{contestdisplayname}My Fake Contest OPEN{/contestdisplayname}"
+                               "{contestdisplayname}My Fake Contest Open{/contestdisplayname}"
+                               "{datadelay}15{/datadelay}"
+                               "{utcoffset}+01:00{/utcoffset}"
+                               "{countrycode}FR{/countrycode}"
+                               "{site}St. Auban{/site}"
+                               "{fromdate}20050903{/fromdate}"
+                               "{todate}20050912{/todate}"
+                               "{lat}44.1959{/lat}"
+                               "{lon}5.98849{/lon}"
+                               "{alt}{/alt}"
+
+                               "{contestname}MYFAKECONTEST_18METER{/contestname}"
+                               "{contestdisplayname}My Fake Contest 18-meter{/contestdisplayname}"
                                "{datadelay}15{/datadelay}"
                                "{utcoffset}+01:00{/utcoffset}"
                                "{countrycode}FR{/countrycode}"
