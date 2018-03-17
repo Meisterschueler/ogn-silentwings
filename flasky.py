@@ -1,12 +1,15 @@
 import os
 from app import create_app, db
-from app.model import Contest, ContestClass, Contestant, Pilot, Task
+from app.model import Contest, ContestClass, Contestant, Pilot, Task, Beacon
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
 from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
 from app.soaringspot import get_soaringspot_contests
 from app.routes import gencuc
+from app.utils import logfile_to_beacons
+from datetime import date
+
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
@@ -16,7 +19,7 @@ migrate = Migrate(app, db)
 def make_shell_context():
     return dict(app=app, db=db,
                 Contest=Contest, ContestClass=ContestClass,
-                Contestant=Contestant, Pilot=Pilot, Task=Task)
+                Contestant=Contestant, Pilot=Pilot, Task=Task, Beacon=Beacon)
 
 
 @app.cli.command()
@@ -44,10 +47,18 @@ def import_soaringspot():
 
 
 @app.cli.command()
-@click.option('--logfile', default=None, help='path of the logfile')
-def import_logfile(logfile_name):
-    """Import data from the ogn APRS stream."""
-    print("Schlürf %s" % logfile_name)
+@click.option('--logfile',  help='path of the logfile')
+def import_logfile(logfile):
+    """Import an OGN APRS stream logfile."""
+    if logfile is None:
+        print("You must specify the logfile with option '--logfile'")
+        return
+
+    print("Start importing logfile '{}'".format(logfile))
+    beacons = logfile_to_beacons(logfile)
+    db.session.add_all(beacons)
+    db.session.commit()
+    print("Inserted {} beacons".format(len(beacons)))
 
 
 @app.cli.command()
