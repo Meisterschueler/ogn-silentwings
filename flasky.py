@@ -6,6 +6,7 @@ import click
 from flask import request
 from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
 from app.soaringspot import get_soaringspot_contests
+from app.routes import gencuc
 from app.utils import logfile_to_beacons
 from datetime import date
 
