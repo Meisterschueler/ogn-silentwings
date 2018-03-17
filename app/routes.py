@@ -1,78 +1,24 @@
 #!/usr/bin/env python3
 # flake8: noqa
-from app import app
 from flask import request,jsonify, send_file
 
 from io import StringIO
 
 import logging
 from logging.handlers import RotatingFileHandler
-
-
+from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
 
 #########################
 # Following Sections provides the Silent Wings Viewer interface
 #########################
 
-# getcontestinfo.php
-@app.route("/getcontestinfo.php")
-@app.route("/getcontestinfo")
-def getcontestinfo():
-    username = request.args.get('username', type = str)
-    cpassword = request.args.get('cpassword', type = str)
-    contestname = request.args.get('contestname', type = str)
-    date = request.args.get('date', type = str)
-    app.logger.error('getcontestinfo.php was called: usernmae = %s contestname = %s date = %s',username,contestname,date)
-
-    if 'username' in request.args:
-        app.logger.error('Username was provided in URL')
-        pass # do something
-
-
-    if 'date' in request.args:
-        app.logger.error('Date was provided in URL; Should return CUC file')
-        # return CUC file
-        # Call function, which creates CUC file here
-        # pass 
-        return send_file(gencuc(), attachment_filename='CUC_temp.cuc')
-
-
-    return "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
-    {date}20050907{/date}{task}1{/task}{validday}0{/validday}{date}20050909{/date}{task}1{/task}{validday}1{/validday}\
-    {date}20050910{/date}{task}1{/task}{validday}1{/validday}{date}20050911{/date}{task}1{/task}{validday}1{/validday}"
-
-
-  # Parameters
-  # username=<user name>
-  # cpassword=<encrypted password>
-  # contestname=<contest name>
-  # date=<YYYYMMDD>
-
-  # Example get to server:
-  # GET /getcontestinfo.php?username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&contestname=FAIGP2005 HTTP/1.1
-  # This should return a list of days and tasks as follows
-
-  # Expected return
-  # {date}20050903{/date}{task}1{/task}{validday}0{/validday}
-  # {date}20050904{/date}{task}1{/task}{validday}0{/validday}
-  # {date}20050907{/date}{task}1{/task}{validday}0{/validday}
-  # {date}20050909{/date}{task}1{/task}{validday}1{/validday}
-  # {date}20050910{/date}{task}1{/task}{validday}1{/validday}
-  # {date}20050911{/date}{task}1{/task}{validday}1{/validday}
-
-  # GET /getcontestinfo?contestname=LIVE&date=20171104&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c HTTP/1.1
-  # This should return a CUC file of the selected day
-
-
 # GetBannerInfo
-@app.route("/getbannerinfo.php")
 def getbannerinfo():
     # Example call 
     # GET /getbannerinfo.php HTTP/1.0
     return # do something
 
 # gettrackerdata.php
-@app.route("/gettrackerdata.php")
 def gettrackerdata():
     querytype = request.args.get('querytype', type = str)
     contestname = request.args.get('contestname', type = str)
@@ -83,16 +29,16 @@ def gettrackerdata():
     endtime = request.args.get('endtime', type = str)
     compression = request.args.get('compression', type = str)
 
-  # GET /gettrackerdata.php?querytype=getintfixes&contestname=FAIGP2005&trackerid=FLRDDA646&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&starttime=20050911000001&endtime=20050911235959&compression=gzip HTTP/1.0
+    # GET /gettrackerdata.php?querytype=getintfixes&contestname=FAIGP2005&trackerid=FLRDDA646&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&starttime=20050911000001&endtime=20050911235959&compression=gzip HTTP/1.0
 
-  app.logger.error('gettrackerdata.php was called: username = %s contestname = %s trackerid = %s starttime = %s',username,contestname,trackerid,starttime)
+    app.logger.error('gettrackerdata.php was called: username = %s contestname = %s trackerid = %s starttime = %s',username,contestname,trackerid,starttime)
 
-  if 'username' in request.args:
-    app.logger.error('Username was provided in URL')
-    pass # do something
+    if 'username' in request.args:
+      app.logger.error('Username was provided in URL')
+      pass # do something
 
-  # TODO: This needs to be gzipped.
-  return """{datadelay}0{/datadelay}\
+    # TODO: This needs to be gzipped.
+    return """{datadelay}0{/datadelay}\
 	1052,20061230045824,-34.60305,138.72063,49.0,0\
 	1052,20061230045828,-34.60306,138.72067,48.0,0\
 	1052,20061230045832,-34.60306,138.72071,48.0,0\
@@ -146,10 +92,20 @@ def gencuc():
   [SearchPath]
   \\psf\Home\Desktop\Flights\
 
-  [Pilots] """)
+  [Pilots]
+  """)
 
   # write pilot list here
-  CUC_temp.write("""\"John\", \"Doe\", 26356, \"CAIXX00,1052\"""")
+  # "Tpilot","",*0,"FLRDDE1FC","Ventus","EC-TTT","TT","",0,"",0,"",1,"",""		# the template to use
+  CUC_temp.write(create_cuc_pilots_block())
+
+  # write the day
+  CUC_temp.write("""[Starts]""")							# this is the template
+  #
+  # [Day_02/03/2016]
+  # D02032016-010400000
+
+  
 
   # write tail of CUC file
   CUC_temp.write("""V,HighEnl=300,AsViolate=True,MinFinAlt=0m,MaxFinAlt=10000m,MaxStartAlt=0m,MaxAlt=0m,MaxAltCorr=50.0m,AltTimeout=0,StartGsp=0km/h,FixRate=10,ValFailed=True
@@ -181,7 +137,6 @@ def gencuc():
 #########################
 
 # eventgroups - DRAFT
-@app.route('/eventgroups')
 def eventgroups():
   # Define input, which we don't have yet
   vname = ['WM2020 Club','WM2020 18m']

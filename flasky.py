@@ -4,11 +4,10 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task, Beacon
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import create_active_contests_string, create_contest_info_string
+from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
 from app.soaringspot import get_soaringspot_contests
 from app.utils import logfile_to_beacons
 from datetime import date
-
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(app, db)
@@ -99,8 +98,9 @@ def route_getactivecontests():
     # {contestname}FAIGP2005{/contestname}{contestdisplayname}1st FAI Grand PrixMondial{/contestdisplayname}{datadelay}15{/datadelay}{utcoffset}+01:00{/utcoffset}
     # {countrycode}FR{/countrycode}{site}St. Auban{/site}{fromdate}20050903{/fromdate}
     # {todate}20050912{/todate}{lat}44.1959{/lat}{lon}5.98849{/lon}{alt}{/alt}
-
-    return create_active_contests_string()
+    active_contests = create_active_contests_string()
+    print(active_contests)
+    return active_contests
 
 @app.route("/getcontestinfo.php")
 @app.route("/getcontestinfo")
@@ -118,8 +118,8 @@ def route_getcontestinfo():
     if 'date' in request.args:
         app.logger.error('Date was provided in URL; Should return CUC file')
         # return CUC file
-        # Call function, which creates CUC file here
-        return ""
+        app.logger.error(create_cuc_pilots_block())
+        return gencuc()
     else:
         return create_contest_info_string(contestname)
 
@@ -147,6 +147,6 @@ def route_gettrackerdata():
 
 #########################
 # Following Sections provides the Silent Wings Studio interface
-# For more details see https://github.com/swingsopen/swtracking/wiki/Tracking-Protocol
+# For more details visit https://github.com/swingsopen/swtracking/wiki/Tracking-Protocol
 #########################
 
