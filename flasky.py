@@ -6,7 +6,7 @@ import click
 from flask import request
 from app.silent_wings import create_active_contests_string, create_contest_info_string
 from app.soaringspot import get_soaringspot_contests
-from app.utils import open_file, process_beacon
+from app.utils import logfile_to_beacons
 from datetime import date
 
 
@@ -54,16 +54,7 @@ def import_logfile(logfile):
         return
 
     print("Start importing logfile '{}'".format(logfile))
-    fin = open_file(logfile)
-    beacons = list()
-    for line in fin:
-        message = process_beacon(line.strip(), reference_date=date(2015, 12, 1))
-        if message is not None:
-            beacon = Beacon(**message)
-            beacons.append(beacon)
-
-    fin.close()
-
+    beacons = logfile_to_beacons(logfile)
     db.session.add_all(beacons)
     db.session.commit()
     print("Inserted {} beacons".format(len(beacons)))

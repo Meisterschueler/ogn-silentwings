@@ -1,3 +1,6 @@
+from datetime import date
+
+
 def process_beacon(raw_message, reference_date=None):
     from ogn.parser import parse, ParseError
     if raw_message[0] != '#':
@@ -38,3 +41,17 @@ def open_file(filename):
     else:
         f = open(filename, 'rt')
         return f
+
+
+def logfile_to_beacons(logfile, reference_date=date(2015, 1, 1)):
+    from .model import Beacon
+    fin = open_file(logfile)
+    beacons = list()
+    for line in fin:
+        message = process_beacon(line.strip(), reference_date=reference_date)
+        if message is not None:
+            beacon = Beacon(**message)
+            beacons.append(beacon)
+
+    fin.close()
+    return beacons
