@@ -119,7 +119,7 @@ def route_getcontestinfo():
         app.logger.error('Date was provided in URL; Should return CUC file')
         # return CUC file
         app.logger.error(create_cuc_pilots_block())
-        return gencuc()
+        return create_cuc_pilots_block()
     else:
         return create_contest_info_string(contestname)
 
