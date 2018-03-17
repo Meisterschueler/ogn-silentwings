@@ -6,8 +6,8 @@ def create_active_contests_string():
     result_string = ""
     for contest in db.session.query(Contest):
         for contest_class in contest.classes:
-            short_name = contest.name.replace(" ", "").upper() + "_" + contest_class.category.replace("_", "")
-            long_name = contest.name + " " + contest_class.category
+            short_name = contest.name.replace(" ", "").upper() + "_" + contest_class.type.replace("_", "")
+            long_name = contest.name + " " + contest_class.type
             result_string += "{{contestname}}{0}{{/contestname}}".format(short_name)
             result_string += "{{contestdisplayname}}{0}{{/contestdisplayname}}".format(long_name)
             result_string += "{{datadelay}}{0}{{/datadelay}}".format(15)
