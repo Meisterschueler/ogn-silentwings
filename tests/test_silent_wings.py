@@ -1,11 +1,77 @@
 import unittest
 
-from datetime import date
+from datetime import date, datetime
 
 from app import create_app, db
 from app.silent_wings import create_active_contests_string, create_contest_info_string,\
     create_cuc_pilots_block
+from app.silent_wings_studio import create_eventgroups_json, create_event_json
 from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot
+
+
+def create_simple_contest():
+    contest = Contest()
+    contest.name = "My Fake Contest"
+    contest.category = None
+    contest.country = "FR"
+    contest.end_date = date(2005, 9, 12)
+    contest.featured = None
+    contest.start_date = date(2005, 9, 3)
+    contest.time_zone = None
+
+    location = Location()
+    location.name = "St. Auban"
+    location.country = "FR"
+    location.latitude = 44.1959
+    location.longitude = 5.98849
+    location.altitude = None
+    contest.location = location
+
+    open_class = ContestClass()
+    open_class.category = "OPEN"
+    open_class.contest = contest
+
+    contestant_1 = Contestant()
+    contestant_1.aircraft_model = "ASG 29"
+    contestant_1.aircraft_registration = "D-KONI"
+    contestant_1.contestant_number = "KG"
+    contestant_1.live_track_id = "FLRDD0815"
+    contestant_1.contest_class = open_class
+
+    pilot_1 = Pilot()
+    pilot_1.first_name = "Konstantin"
+    pilot_1.last_name = "Gründger"
+    pilot_1.contestant = contestant_1
+
+    contestant_2 = Contestant()
+    contestant_2.aircraft_model = "ASK 13"
+    contestant_2.aircraft_registration = "D-1900"
+    contestant_2.contestant_number = "XX"
+    contestant_2.live_track_id = "FLRDD4711"
+    contestant_2.contest_class = open_class
+
+    pilot_2 = Pilot()
+    pilot_2.first_name = "Dagobert"
+    pilot_2.last_name = "Duck"
+    pilot_2.contestant = contestant_2
+
+    task_1 = Task()
+    task_1.no_start = datetime(2015, 9, 3, 10, 0, 0)
+    task_1.task_type = "High speed"
+    task_1.task_date = date(2005, 9, 3)
+    task_1.contest_class = open_class
+
+    task_2 = Task()
+    task_2.no_start = datetime(2015, 9, 4, 10, 0, 0)
+    task_2.task_date = date(2005, 9, 4)
+    task_2.contest_class = open_class
+
+    task_3 = Task()
+    task_3.no_start = datetime(2015, 9, 7, 10, 0, 0)
+    task_3.task_date = date(2005, 9, 7)
+    task_3.contest_class = open_class
+
+    return contest
 
 
 class TestDB(unittest.TestCase):
@@ -16,75 +82,18 @@ class TestDB(unittest.TestCase):
 
         db.create_all()
 
+        # Put an example contest into the database
+        contest = create_simple_contest()
+        db.session.add(contest)
+        db.session.commit()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
-    def test(self):
-        self.maxDiff = None     # long test string means long diffs
-
-        # Create simple contest
-        contest = Contest()
-        contest.name = "My Fake Contest"
-        contest.category = None
-        contest.country = "FR"
-        contest.end_date = date(2005, 9, 12)
-        contest.featured = None
-        contest.start_date = date(2005, 9, 3)
-        contest.time_zone = None
-
-        location = Location()
-        location.name = "St. Auban"
-        location.country = "FR"
-        location.latitude = 44.1959
-        location.longitude = 5.98849
-        location.altitude = None
-        contest.location = location
-
-        open_class = ContestClass()
-        open_class.category = "OPEN"
-        open_class.contest = contest
-
-        contestant_1 = Contestant()
-        contestant_1.aircraft_model = "ASG 29"
-        contestant_1.aircraft_registration = "D-KONI"
-        contestant_1.contestant_number = "KG"
-        contestant_1.live_track_id = "FLRDD0815"
-        contestant_1.contest_class = open_class
-
-        pilot_1 = Pilot()
-        pilot_1.first_name = "Konstantin"
-        pilot_1.last_name = "Gründger"
-        pilot_1.contestant = contestant_1
-
-        contestant_2 = Contestant()
-        contestant_2.aircraft_model = "ASK 13"
-        contestant_2.aircraft_registration = "D-1900"
-        contestant_2.contestant_number = "XX"
-        contestant_2.live_track_id = "FLRDD4711"
-        contestant_2.contest_class = open_class
-
-        pilot_2 = Pilot()
-        pilot_2.first_name = "Dagobert"
-        pilot_2.last_name = "Duck"
-        pilot_2.contestant = contestant_2
-
-        task_1 = Task()
-        task_1.task_date = date(2005, 9, 3)
-        task_1.contest_class = open_class
-
-        task_2 = Task()
-        task_2.task_date = date(2005, 9, 4)
-        task_2.contest_class = open_class
-
-        task_3 = Task()
-        task_3.task_date = date(2005, 9, 7)
-        task_3.contest_class = open_class
-
-        # Put the contest into the database
-        db.session.add(contest)
-        db.session.commit()
+    def test_silent_wings_viewer(self):
+        self.maxDiff = None     # long test_silent_wings_viewer string means long diffs
 
         # Check if the strings for silent wings are correct
         # Check answer to getactivecontests.php
@@ -110,11 +119,22 @@ class TestDB(unittest.TestCase):
             "{date}20050907{/date}{task}1{/task}{validday}0{/validday}")
         self.assertEqual(message, silent_wings_string)
 
+    def test_cuc_pilots_block(self):
         message = create_cuc_pilots_block()
         cuc_pilots_block = ('[Pilots]\n'
                             '"Konstantin","Gründger",123,"FLRDD0815","ASG 29","D-KONI","KG","",0,"",0,"",1,"",""\n'
                             '"Dagobert","Duck",123,"FLRDD4711","ASK 13","D-1900","XX","",0,"",0,"",1,"",""')
         self.assertEqual(message, cuc_pilots_block)
+
+    def test_silent_wings_studio(self):
+        message = create_eventgroups_json()
+        print(message)
+
+        import json
+        message_json = json.loads(message)
+        contest_id = message_json[0]['events'][0]['id']
+        message = create_event_json(contest_id)
+        print(message)
 
 
 if __name__ == '__main__':
