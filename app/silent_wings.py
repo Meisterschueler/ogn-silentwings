@@ -1,6 +1,8 @@
 from app.model import Contest, Contestant, Beacon
 from app import db
 
+from datetime import timezone
+
 
 def create_active_contests_string():
     result_string = ""
@@ -48,8 +50,14 @@ def create_tracker_data(tracker_id):
     query = db.session.query(Beacon) \
         .filter(Beacon.address == tracker_id) \
         .order_by(Beacon.timestamp)
+
     for beacon in query:
-        result_list.append("{0},{1},{2},{3},{4},1".format(beacon.address, int(beacon.timestamp.timestamp()), beacon.latitude, beacon.longitude, int(beacon.altitude)))
+        result_list.append("{0},{1},{2},{3},{4},1".format(
+            beacon.address,
+            int(beacon.timestamp.replace(tzinfo=timezone.utc).timestamp()),
+            beacon.latitude,
+            beacon.longitude,
+            int(beacon.altitude)))
 
     return '\n'.join(result_list)
 
