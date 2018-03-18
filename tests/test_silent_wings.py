@@ -127,7 +127,7 @@ class TestDB(unittest.TestCase):
                                "{todate}20050912{/todate}"
                                "{lat}44.1959{/lat}"
                                "{lon}5.98849{/lon}"
-                               "{alt}{/alt}"
+                               "{alt}{/alt}\n"
 
                                "{contestname}MYFAKECONTEST_18METER{/contestname}"
                                "{contestdisplayname}My Fake Contest 18-meter{/contestdisplayname}"
@@ -139,7 +139,8 @@ class TestDB(unittest.TestCase):
                                "{todate}20050912{/todate}"
                                "{lat}44.1959{/lat}"
                                "{lon}5.98849{/lon}"
-                               "{alt}{/alt}")
+                               "{alt}{/alt}\n"
+                               )
         self.assertEqual(message, silent_wings_string)
 
         # Check answer to getcontestinfo
