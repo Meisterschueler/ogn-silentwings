@@ -24,12 +24,12 @@ def glidertracker_filter(contest_name_with_class_type):
 
                     entry_dict = {'live_track_id': contestant.live_track_id,
                                   'aircraft_registration': contestant.aircraft_registration,
-                                   'contestant_number': contestant.contestant_number,
-                                   'aircraft_model': contestant.aircraft_model}
+                                  'contestant_number': contestant.contestant_number,
+                                  'aircraft_model': contestant.aircraft_model}
 
                     entry = '"{live_track_id}","{aircraft_registration}","{contestant_number}","{aircraft_model}"'.format(**entry_dict)
                     result_list.append(entry)
-    print("\n".join(result_list))
+    print("\n".join(result_list).replace('"', ""))
     return "\n".join(result_list)
 
 # This function prints all available contests and classes
