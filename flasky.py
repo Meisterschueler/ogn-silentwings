@@ -4,7 +4,7 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task, Beacon
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
+from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block, create_cuc
 from app.soaringspot import get_soaringspot_contests
 from app.routes import gencuc
 from app.utils import logfile_to_beacons
@@ -132,10 +132,13 @@ def route_getcontestinfo():
     date = request.args.get('date', type = str)
 
     if 'date' in request.args:
-        app.logger.error('Date was provided in URL; Should return CUC file')
+        # app.logger.error('Date was provided in URL; Should return CUC file')
         # return CUC file
-        app.logger.error(create_cuc_pilots_block())
-        return create_cuc_pilots_block()
+        # app.logger.error(create_cuc_pilots_block())
+        # return create_cuc_pilots_block()
+        print("create_cuc was called")
+        print(create_cuc())
+        return create_cuc()
     else:
         return create_contest_info_string(contestname)
 

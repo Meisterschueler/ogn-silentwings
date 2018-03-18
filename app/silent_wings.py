@@ -60,3 +60,10 @@ def create_cuc_pilots_block():
         result_list.append(entry)
 
     return "\n".join(result_list)
+
+def create_cuc():
+    with open('app/cuctester.py') as f:
+        read_data = f.read()
+    f.closed
+    print(read_data)
+    return read_data

@@ -1,10 +1,13 @@
 from app.model import Contest, Contestant
 from app import db
 
+# This function generates the filter contents
 def glidertracker_filter(contest_name_with_class_type):
+    # ===============================================
     # This file write a filter list for glidertracker
     # ID,CALL,CN,TYPE
     # 06DDABCD,D-ABCD,CD,DuoDiscus
+    # ==============================================
     contest_name = contest_name_with_class_type.partition("_")[0]
     short_name = contest_name.replace(" ", "").upper()
     contest_class_type = contest_name_with_class_type.partition("_")[2]
