@@ -74,6 +74,21 @@ def aprs_connect():
 
     client.disconnect()
 
+@app.cli.command()
+@click.option('--contest',  help='Name of Contest')
+def cmd_glidertracker_filter(contest):
+    """Generate a filter list for glidertracker.org"""
+    from app.glidertracker import glidertracker_filter, glidertracker_contests
+    if contest is None:
+        print("You must specify the name of the contest with option '--contest'")
+        print("Following contests are known:")
+        # Output list of known contests 
+        print(glidertracker_contests())
+        return
+
+    print("Generating a filter list for glidertracker.org")
+    glidertracker_filter(contest)
+
 #########################
 # Following Sections provides the Silent Wings Viewer interface
 # For more details visit http://wiki.silentwings.no/index.php/Tracking_Protocol
