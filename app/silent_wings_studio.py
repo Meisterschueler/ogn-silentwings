@@ -11,7 +11,7 @@ def create_eventgroups_json():
         for contest_class in contest.classes:
             competition_dict = dict()
             competition_dict['name'] = '{0} - {1}'.format(contest.name, contest_class.category)
-            competition_dict['description'] = 'Contest: {0}, category: {1}'.format(contest.name, contest_class.category)
+            competition_dict['description'] = 'Contest: {0}, category: {1}'.format(contest.name, contest_class.type)
             competition_dict['bannerUrl'] = 'No banner url'
             competition_dict['events'] = list()
             for task in contest_class.tasks:
@@ -33,7 +33,7 @@ def create_event_json(task_id):
     event = dict()
     event['name'] = task.contest_class.contest.name
     event['description'] = 'Contest: {0}, category: {1}, day: {2}'.format(task.contest_class.contest.name,
-                                                                          task.contest_class.category,
+                                                                          task.contest_class.type,
                                                                           task.task_date)
     event['revision'] = 0
     event['task'] = dict()

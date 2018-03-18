@@ -4,9 +4,10 @@ from datetime import date, datetime
 
 from app import create_app, db
 from app.silent_wings import create_active_contests_string, create_contest_info_string,\
-    create_cuc_pilots_block
+    create_cuc_pilots_block, create_tracker_data
 from app.silent_wings_studio import create_eventgroups_json, create_event_json
-from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot
+from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot,\
+    Beacon
 
 
 def create_simple_contest():
@@ -80,6 +81,16 @@ def create_simple_contest():
     return contest
 
 
+def create_simple_tracker_data():
+    beacons = list()
+    beacons.append(Beacon(**{'address': "FLRDD0815", 'timestamp': datetime(2015, 9, 3, 10, 1, 23), 'latitude': 44.203, 'longitude': 5.95, 'altitude': 1009}))
+    beacons.append(Beacon(**{'address': "FLRDD0815", 'timestamp': datetime(2015, 9, 3, 10, 1, 24), 'latitude': 44.204, 'longitude': 5.94, 'altitude': 1011}))
+    beacons.append(Beacon(**{'address': "FLRDD0815", 'timestamp': datetime(2015, 9, 3, 10, 1, 25), 'latitude': 44.205, 'longitude': 5.93, 'altitude': 1013}))
+    beacons.append(Beacon(**{'address': "FLRDD4711", 'timestamp': datetime(2015, 9, 3, 10, 1, 22), 'latitude': 44.2, 'longitude': 5.9, 'altitude': 1000}))
+
+    return beacons
+
+
 class TestDB(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
@@ -88,9 +99,11 @@ class TestDB(unittest.TestCase):
 
         db.create_all()
 
-        # Put an example contest into the database
+        # Put an example contest with tracker data into the database
         contest = create_simple_contest()
+        beacons = create_simple_tracker_data()
         db.session.add(contest)
+        db.session.add_all(beacons)
         db.session.commit()
 
     def tearDown(self):
@@ -135,6 +148,15 @@ class TestDB(unittest.TestCase):
             "{date}20050903{/date}{task}1{/task}{validday}0{/validday}"
             "{date}20050904{/date}{task}1{/task}{validday}0{/validday}"
             "{date}20050907{/date}{task}1{/task}{validday}0{/validday}")
+        self.assertEqual(message, silent_wings_string)
+
+    def test_silent_wings_viewer_tracker_data(self):
+        message = create_tracker_data('FLRDD0815')
+        silent_wings_string = (
+            "{datadelay}6{/datadelay}\n"
+            "FLRDD0815,1441267283,44.203,5.95,1009,1\n"
+            "FLRDD0815,1441267284,44.204,5.94,1011,1\n"
+            "FLRDD0815,1441267285,44.205,5.93,1013,1")
         self.assertEqual(message, silent_wings_string)
 
     def test_cuc_pilots_block(self):

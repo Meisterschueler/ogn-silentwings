@@ -1,4 +1,4 @@
-from app.model import Contest, Contestant
+from app.model import Contest, Contestant, Beacon
 from app import db
 
 
@@ -40,6 +40,18 @@ def create_contest_info_string(contest_name_with_class_type):
                     # "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
 
     return result_string
+
+
+def create_tracker_data(tracker_id):
+    result_list = list()
+    result_list.append("{datadelay}6{/datadelay}")
+    query = db.session.query(Beacon) \
+        .filter(Beacon.address == tracker_id) \
+        .order_by(Beacon.timestamp)
+    for beacon in query:
+        result_list.append("{0},{1},{2},{3},{4},1".format(beacon.address, int(beacon.timestamp.timestamp()), beacon.latitude, beacon.longitude, int(beacon.altitude)))
+
+    return '\n'.join(result_list)
 
 
 def create_cuc_pilots_block():
