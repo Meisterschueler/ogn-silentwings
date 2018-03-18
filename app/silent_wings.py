@@ -18,7 +18,7 @@ def create_active_contests_string():
             result_string += "{{todate}}{0}{{/todate}}".format(contest.end_date.strftime("%Y%m%d"))
             result_string += "{{lat}}{0}{{/lat}}".format(contest.location.latitude)
             result_string += "{{lon}}{0}{{/lon}}".format(contest.location.longitude)
-            result_string += "{{alt}}{0}{{/alt}}".format(contest.location.altitude if contest.location.altitude is not None else '')
+            result_string += "{{alt}}{0}{{/alt}}\n".format(contest.location.altitude if contest.location.altitude is not None else '')
 
     return result_string
 
