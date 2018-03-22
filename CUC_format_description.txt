@@ -61,9 +61,9 @@ ValFailed=True			# Unknown
 [Starts]
 
 [Day_02/03/2016]
-D02032016-010400000
+D02032016-010400000		#Dddmmyyyy - mandatory for SWV
 
-
+# V line is extra info - ignored by SWV
 V,HighEnl=300,AsViolate=True,MinFinAlt=0m,MaxFinAlt=10000m,MaxStartAlt=0m,MaxAlt=0m,MaxAltCorr=50.0m,AltTimeout=0,StartGsp=0km/h,FixRate=10,ValFailed=True
 C301299000000301299000003
 C4223150N00151500E La Cerdanya - LECD	#CxxyyyyyNxxxyyyyyEname
@@ -73,6 +73,10 @@ C4223150N00151500E La Cerdanya - LECD	#CxxyyyyyNxxxyyyyyEname
 # N denotes North (N) or south (S)
 # E denotes East (E) or west (W)
 # name is written name of turnpoint
+# For a description of the C-Record, please refer to: http://www.gliding.ch/images/news/lx20/fichiers_igc.htm#Crec
+C301299000000301299000003	# For defined task - same as in IGC file - ignored by SWV
+C4223150N00151500ELa Cerdanya - LECD
+>>>>>>> feature/cucformatdesc
 C4223150N00151500ELa Cerdanya - LECD
 C4234110N00044360WSanta Cilia - LECI
 C4206290N00028590EBenabarre
