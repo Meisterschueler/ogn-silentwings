@@ -163,6 +163,15 @@ def route_gettrackerdata():
     return ""
 
 
+@app.route("/getprotocolinfo.php")
+def route_getprotocolinfo():
+    from time import time
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    # {version}1.3{/version}{date}20080811{/date}{time}1218457469{/time}
+    return "{version}1.3{/version}{date}" + date.today().strftime("%Y%m%d") + "{/date}{time}" + str(int(time())) + "{/time}"
+
+
 
 #########################
 # Following Sections provides the Silent Wings Studio interface
