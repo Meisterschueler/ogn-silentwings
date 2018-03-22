@@ -61,11 +61,6 @@ def create_cuc_pilots_block(contest_name_with_class_type):
         entry = '"{first_name}","{last_name}",*0,"{live_track_id}","{aircraft_model}","{aircraft_registration}","{contestant_number}","",0,"",0,"",1,"",""'.format(**entry_dict)
         result_list.append(entry)
 
-    # Add a dummy entry to debugging purposes
-    entry = '"Tpilot","",*0,"FLRDDE1FC","Ventus","EC-TTT","TT","",0,"",0,"",1,"",""' 
-    result_list.append(entry)
-
-
     result_list.append("\n[Starts]\n")
     # print("\n".join(result_list))
     return "\n".join(result_list)
