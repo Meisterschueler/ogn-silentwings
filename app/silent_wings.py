@@ -1,4 +1,4 @@
-from app.model import Contest, Contestant
+from app.model import Contest, Contestant, Task
 from app import db
 
 
@@ -42,7 +42,8 @@ def create_contest_info_string(contest_name_with_class_type):
     return result_string
 
 
-def create_cuc_pilots_block():
+def create_cuc_pilots_block(contest_name_with_class_type):
+    # TODO: Needs contest_name_with_class_type as input to find correct contestants per class
     result_list = list()
     result_list.append("[Pilots]")
 
@@ -59,11 +60,28 @@ def create_cuc_pilots_block():
         entry = '"{first_name}","{last_name}",123,"{live_track_id}","{aircraft_model}","{aircraft_registration}","{contestant_number}","",0,"",0,"",1,"",""'.format(**entry_dict)
         result_list.append(entry)
 
+    result_list.append("\n[Starts]\n\n")
     return "\n".join(result_list)
 
-def create_cuc():
-    with open('app/cuctester.py') as f:
-        read_data = f.read()
-    f.closed
-    print(read_data)
-    return read_data
+def create_cuc(contestname,date):
+    result_list = list()
+    # Generate Header of CUC file
+    entry = "[Options]\nTitle=Angel Casado OGN-SGP test\nPeriodFrom=0\nPeriodTo=401521\nAvtoSaveFlight=True\nAvtoSaveTime=60\nAvtoPublishTime=-300\nTakeoffAlt=0m\nTaskPicWidth=600\nTaskPicHeight=400\nTaskPicCompression=90\nTaskPicBorder=12\nUtcOffset=1\nNeedLegs=False\nStrictName=False\nUseBinFiles=True\nCommentPrefix=1\n\n[Warnings]\nHighEnl=300\nAsViolate=True\nMinFinAlt=0m\nMaxFinAlt=10000m\nMaxStartAlt=0m\nMaxAlt=0m\nMaxAltCorr=50.0m\nAltTimeout=0\nStartGsp=0km/h\nFixRate=10\nValFailed=True\n\n[SearchPath]\n\\psf\Home\Desktop\Flights\ \n"
+    result_list.append(entry)
+
+    # Generate [Pilot] Block of CUC file
+    entry = create_cuc_pilots_block(contestname)
+    result_list.append(entry)
+
+    #  Generate [Date] Block of CUC file
+    entry = "[DAY_" + date[6:8] + "/" + date [4:6] + "/" + date[0:4] + "]\nD" + date[6:8] + date [4:6] + date[0:4] + "-010400000\n"
+    result_list.append(entry)
+
+    # Generate Footer of CUC file
+    entry = "V,HighEnl=300,AsViolate=True,MinFinAlt=0m,MaxFinAlt=10000m,MaxStartAlt=0m,MaxAlt=0m,MaxAltCorr=50.0m,AltTimeout=0,StartGsp=0km/h,FixRate=10,ValFailed=True\nC301299000000301299000003\nC4223150N00151500ELa Cerdanya - LECD\nC4223150N00151500ELa Cerdanya - LECD\nC4234110N00044360WSanta Cilia - LECI\nC4206290N00028590EBenabarre\nC4203020N00117320EOliana\nC4223150N00151500ELa Cerdanya - LECD\nC4223150N00151500ELa Cerdanya - LECD\nTSK,WpDis=True,MinDis=True,NearDis=0.5km,NearAlt=200.0m,MinFinAlt=0.0km\nXTest day"
+    result_list.append(entry)
+    entry = 'E000,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE001,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE002,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE003,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE004,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE005,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\n'
+    result_list.append(entry)
+
+    # print("\n".join(result_list))
+    return "\n".join(result_list)
