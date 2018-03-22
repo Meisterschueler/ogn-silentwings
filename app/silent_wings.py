@@ -36,7 +36,9 @@ def create_contest_info_string(contest_name_with_class_type):
                 for task in contest.classes[0].tasks:
                     result_string += "{{date}}{0}{{/date}}".format(task.task_date.strftime("%Y%m%d"))
                     result_string += "{{task}}{0}{{/task}}".format(1)
-                    result_string += "{{validday}}{0}{{/validday}}".format(0)
+                    # Modified the next line for debugging purposes - forces output of valid day
+                    result_string += "{{validday}}1{{/validday}}"
+                    # result_string += "{{validday}}{0}{{/validday}}".format(0)
                     # "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
 
     return result_string
@@ -49,7 +51,6 @@ def create_cuc_pilots_block(contest_name_with_class_type):
 
     for contestant in db.session.query(Contestant):
         pilot = contestant.pilots[0]
-
         entry_dict = {'first_name': pilot.first_name,
                       'last_name': pilot.last_name,
                       'live_track_id': contestant.live_track_id,
@@ -57,10 +58,16 @@ def create_cuc_pilots_block(contest_name_with_class_type):
                       'aircraft_registration': contestant.aircraft_registration,
                       'contestant_number': contestant.contestant_number}
 
-        entry = '"{first_name}","{last_name}",123,"{live_track_id}","{aircraft_model}","{aircraft_registration}","{contestant_number}","",0,"",0,"",1,"",""'.format(**entry_dict)
+        entry = '"{first_name}", "{last_name}", *0, "{live_track_id}", "{aircraft_model}", "{aircraft_registration}", "{contestant_number}","",0,"",0,"",1,"",""'.format(**entry_dict)
         result_list.append(entry)
 
-    result_list.append("\n[Starts]\n\n")
+    # Add a dummy entry to debugging purposes
+    entry = '"Tpilot" , "", *0,"FLRDDE1FC","Ventus","EC-TTT","TT","",0,"",0,"",1,"",""' 
+    result_list.append(entry)
+
+
+    result_list.append("\n[Starts]\n")
+    # print("\n".join(result_list))
     return "\n".join(result_list)
 
 def create_cuc(contestname,date):
@@ -74,7 +81,7 @@ def create_cuc(contestname,date):
     result_list.append(entry)
 
     #  Generate [Date] Block of CUC file
-    entry = "[DAY_" + date[6:8] + "/" + date [4:6] + "/" + date[0:4] + "]\nD" + date[6:8] + date [4:6] + date[0:4] + "-010400000\n"
+    entry = "[Day_" + date[6:8] + "/" + date [4:6] + "/" + date[0:4] + "]\nD" + date[6:8] + date [4:6] + date[0:4] + "-010400000"
     result_list.append(entry)
 
     # Generate Footer of CUC file
@@ -82,6 +89,8 @@ def create_cuc(contestname,date):
     result_list.append(entry)
     entry = 'E000,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE001,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE002,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE003,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE004,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE005,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\n'
     result_list.append(entry)
-
-    # print("\n".join(result_list))
+    
+    print("=========================")
+    print("\n".join(result_list))
+    print("=========================")
     return "\n".join(result_list)
