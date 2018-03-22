@@ -4,7 +4,7 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task, Beacon
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block, create_cuc
+from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc
 from app.soaringspot import get_soaringspot_contests
 from app.routes import gencuc
 from app.utils import logfile_to_beacons
@@ -132,13 +132,9 @@ def route_getcontestinfo():
     date = request.args.get('date', type = str)
 
     if 'date' in request.args:
-        # app.logger.error('Date was provided in URL; Should return CUC file')
         # return CUC file
-        # app.logger.error(create_cuc_pilots_block())
-        # return create_cuc_pilots_block()
         print("create_cuc was called")
-        print(create_cuc())
-        return create_cuc()
+        return create_cuc(contestname,date)
     else:
         return create_contest_info_string(contestname)
 
@@ -162,7 +158,11 @@ def route_gettrackerdata():
     endtime = request.args.get('endtime', type = str)
     compression = request.args.get('compression', type = str)
 
+    # GET /gettrackerdata.php?querytype=getintfixes&contestname=SOARINGSPOT3DTRACKINGINTERFACE%5f18METER&trackerid=FLRDDE1FC&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&starttime=20180303000001&endtime=20180303235959&compression=gzip HTTP/1.0
+    print("gettrackerdata was called!")
     return ""
+
+
 
 #########################
 # Following Sections provides the Silent Wings Studio interface
