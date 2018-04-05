@@ -4,7 +4,7 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task, Beacon
 from flask_migrate import Migrate, MigrateCommand
 import click
 from flask import request
-from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc_pilots_block
+from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc
 from app.soaringspot import get_soaringspot_contests
 from app.routes import gencuc
 from app.utils import logfile_to_beacons
@@ -74,6 +74,21 @@ def aprs_connect():
 
     client.disconnect()
 
+@app.cli.command()
+@click.option('--contest',  help='Name of Contest')
+def cmd_glidertracker_filter(contest):
+    """Generate a filter list for glidertracker.org"""
+    from app.glidertracker import glidertracker_filter, glidertracker_contests
+    if contest is None:
+        print("You must specify the name of the contest with option '--contest'")
+        print("Following contests are known:")
+        # Output list of known contests 
+        print(glidertracker_contests())
+        return
+
+    print("Generating a filter list for glidertracker.org")
+    glidertracker_filter(contest)
+
 #########################
 # Following Sections provides the Silent Wings Viewer interface
 # For more details visit http://wiki.silentwings.no/index.php/Tracking_Protocol
@@ -117,10 +132,9 @@ def route_getcontestinfo():
     date = request.args.get('date', type = str)
 
     if 'date' in request.args:
-        app.logger.error('Date was provided in URL; Should return CUC file')
         # return CUC file
-        app.logger.error(create_cuc_pilots_block())
-        return create_cuc_pilots_block()
+        print("create_cuc was called")
+        return create_cuc(contestname,date)
     else:
         return create_contest_info_string(contestname)
 
@@ -144,7 +158,20 @@ def route_gettrackerdata():
     endtime = request.args.get('endtime', type = str)
     compression = request.args.get('compression', type = str)
 
+    # GET /gettrackerdata.php?querytype=getintfixes&contestname=SOARINGSPOT3DTRACKINGINTERFACE%5f18METER&trackerid=FLRDDE1FC&username=ogn&cpassword=ecbad38d0b5a3cf6482e661028b2c60c&starttime=20180303000001&endtime=20180303235959&compression=gzip HTTP/1.0
+    print("gettrackerdata was called!")
     return ""
+
+
+@app.route("/getprotocolinfo.php")
+def route_getprotocolinfo():
+    from time import time
+    username = request.args.get('username', type = str)
+    cpassword = request.args.get('cpassword', type = str)
+    # {version}1.3{/version}{date}20080811{/date}{time}1218457469{/time}
+    return "{version}1.3{/version}{date}" + date.today().strftime("%Y%m%d") + "{/date}{time}" + str(int(time())) + "{/time}"
+
+
 
 #########################
 # Following Sections provides the Silent Wings Studio interface

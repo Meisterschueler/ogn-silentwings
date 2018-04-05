@@ -1,0 +1,94 @@
+This file tries to summarize information about the discontinues CUC format once used by SeeYou from Naviter.
+
+Most of the information privided in comments below is taken from: http://download.naviter.com/docs/cucompetition.pdf - page 41 onwards
+
+===============
+[Options]			# Header for Options part
+Title=HOP2011			# Official competition title
+Site=LKVP			# Contest site
+PeriodFrom=40768		# Contest period start
+PeriodTo=40776			# Contest period end
+Class=Klub			# Contest class
+ClassIndex=1			# Unknown
+AvtoSaveFlight=False		# 1 if autosave flights is on, 0 if off
+AvtoSaveTime=-60		# autosave time in second
+AvtoPublishTime=-300		# Unknown
+TakeoffAlt=404m			# Take of altitude
+TaskPicWidth=600		# maximum width of the task picture in pixel
+TaskPicHeight=400		# maximum height of the task pciture in pixel
+TaskPicCompression=90		# quality of the resulting JPG. Can be a number between 0 and 100
+TaskPicBorder=12		# border around the task in pixels
+UtcOffset=1			# Offset to UTC time
+NeedLegs=False			# 0 if information about each contest leg in NOT sent to scoring scripts, 1 if it is included (default = 0)
+StrictName=False		# 1 if auto evaluate should use exact filenames, 0 if not (default = 0)
+UseBinFiles=False		# weather or not to search for binary files as well (FIL, CAI, TAN in addition to IGC)
+CommentPrefix=0			# 0 = no prefix, 1 = competition number, 2 = pilot name
+PublishKey=5256B4A7ABED9CF4395347B6859E708442A13D557B62490482
+
+[Warnings]
+HighEnl=300			# ENL number from "ENL Value is greater than"
+AsViolate=True			# 1 if "Airspace violation is found" is set, 0 if not
+MinFinAlt=0m			# "Minimum finish altitude" in meters
+MaxFinAlt=10000m		# "Maximum finish altitude" in meters
+MaxAlt=0m			# "Maxumum altitude exceeded" in meters
+MaxAltCorr=50.0m		# Unknown
+AltTimeout=0			# "Time required below start altitude before start" in seconds
+StartGsp=0km/h			# "Max. start groundspeed"
+FixRate=10			# "Max. recording interval" in seconds
+ValFailed=True			# Unknown
+
+[SearchPath]			
+
+[Pilots]
+"G.Jakl,M.Kočí,P.Fišar","",*,"","L-Spatz","D-1686","1686","Klub",78,"SFC Ebersbach, AK Ustí n.O.",0,"",1,"",""
+"Hans-Jürgen","Krause",*,"","SZD 30 Pirat","D-1761","1761","Klub",86,"FSV  Eisenhüttenstadt",0,"",1,"",""
+"Gerhard","Maleschka",*,"","Foka","D-9357","9357","Klub",88,"Langhennersdorf/Rana",0,"",1,"",""
+# givenname, lastname, country, birthdate, modeltype, registration, compid, compclass, handicap, Club name, is_hc, ?, pure_glider, ?, ?
+
+# Explanaition of key words:
+# givenname: Also referred to as first name
+# lastname: also referred to as name only
+# country: This in in fact country or club, aka "Team" - depnding on the level of competition
+# birthdate: Birth date of the competitor in date format 
+# modeltype: Glider type
+# compid: Competition ID
+# registration: Official registration
+# compclass: Glider competition class
+# handicap: Glider handicap
+# is_hc: 0 if contestant flies in competition, 1 if he/she is a guest and hus should not influence the daily score
+# pure_glider: 1 if yes, 0 if not
+
+[Starts]
+
+[Day_02/03/2016]
+D02032016-010400000		#Dddmmyyyy - mandatory for SWV
+
+# V line is extra info - ignored by SWV
+V,HighEnl=300,AsViolate=True,MinFinAlt=0m,MaxFinAlt=10000m,MaxStartAlt=0m,MaxAlt=0m,MaxAltCorr=50.0m,AltTimeout=0,StartGsp=0km/h,FixRate=10,ValFailed=True
+C301299000000301299000003
+C4223150N00151500E La Cerdanya - LECD	#CxxyyyyyNxxxyyyyyEname
+# Every line starts with a 'C'
+# xx is degrees of lat/lon prior to comma
+# yy is degrees of lat/lon after comma
+# N denotes North (N) or south (S)
+# E denotes East (E) or west (W)
+# name is written name of turnpoint
+# For a description of the C-Record, please refer to: http://www.gliding.ch/images/news/lx20/fichiers_igc.htm#Crec
+C301299000000301299000003	# For defined task - same as in IGC file - ignored by SWV
+C4223150N00151500ELa Cerdanya - LECD
+>>>>>>> feature/cucformatdesc
+C4223150N00151500ELa Cerdanya - LECD
+C4234110N00044360WSanta Cilia - LECI
+C4206290N00028590EBenabarre
+C4203020N00117320EOliana
+C4223150N00151500ELa Cerdanya - LECD
+C4223150N00151500ELa Cerdanya - LECD
+TSK,WpDis=True,MinDis=True,NearDis=0.5km,NearAlt=200.0m,MinFinAlt=0.0km
+XTest day
+E000,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+E001,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+E002,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+E003,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+E004,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+E005,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,
+
