@@ -21,6 +21,20 @@ class no_task_document:
     text = '{"code":404,"message":"Class with 3470 id does not have any tasks."}'
 
 
+def print_all_contests(contests):
+    for contest in contests:
+            print(contest)
+            print(contest.location)
+            for contest_class in contest.classes:
+                print(contest_class)
+                for task in contest_class.tasks:
+                    print(task)
+                for contestant in contest_class.contestants:
+                    print(contestant)
+                    for pilot in contestant.pilots:
+                        print(pilot)
+
+
 class TestDB(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
@@ -54,17 +68,7 @@ class TestDB(unittest.TestCase):
                                          contestant_document, no_task_document]
 
         contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        for contest in contests:
-            print(contest)
-            print(contest.location)
-            for contest_class in contest.classes:
-                print(contest_class)
-                for task in contest_class.tasks:
-                    print(task)
-                for contestant in contest_class.contestants:
-                    print(contestant)
-                    for pilot in contestant.pilots:
-                        print(pilot)
+        print_all_contests(contests)
 
         db.session.add_all(contests)
         db.session.commit()
@@ -74,11 +78,10 @@ class TestDB(unittest.TestCase):
         print(document)
 
     def test_remote_objects(self):
-        objects = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        for o in objects:
-            print(o)
+        contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
+        print_all_contests(contests)
 
-        db.session.add_all(objects)
+        db.session.add_all(contests)
         db.session.commit()
 
 
