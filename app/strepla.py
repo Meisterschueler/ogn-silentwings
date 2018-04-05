@@ -33,21 +33,21 @@ def get_strepla_contest(cID):
         with urllib.request.urlopen("https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)) as url:
             class_data = json.loads(url.read().decode())
             for contest_class_row in class_data:
-                print("contest_class_row:\n", contest_class_row)
-                contest_class_dict = {'category': contest_class_row['name'],
-                                  'type': contest_class_row['rulename']}
+                # print("contest_class_row:\n", contest_class_row)
+                contest_class_dict = {'category': contest_class_row['rulename'],
+                                  'type': contest_class_row['name']}
 
                 contest_class = ContestClass(**contest_class_dict)
                 contest_class.contest = contest
 
                 # print(contest_class_row['name'])
                 # Process pilots of class
-                # print("https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name']))
+                # print("https://www.strepla.de/scs/ws/pilot.ashx?cmda=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name']))
                 with urllib.request.urlopen("https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name'])) as url:
                     pilot_data = json.loads(url.read().decode())
                     # print(pilot_data) 
                     if (len(pilot_data) == 0):
-                        print("Class name not recognized. Aborting")
+                        print("Class name not recognized. Aborting.")
                         return
 
                     for pilot_row in pilot_data:

@@ -23,6 +23,7 @@ def glidertracker_filter(contest_name_with_class_type):
                 print("This is our contest: " + contest_name)
                 print("This is our class: " + contest_class_type)
 
+                # Bug???? How is class taken into account????
                 for contestant in db.session.query(Contestant):
                     # pilot = contestant.pilots[0]
 
