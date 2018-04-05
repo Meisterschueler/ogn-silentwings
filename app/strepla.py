@@ -61,8 +61,8 @@ def get_strepla_contest(cID):
                         contestant = Contestant(**contestant_dict)
                         contestant.contest_class = contest_class
 
-                        pilot_dict = {'first_name': pilot_row['name'].rsplit(',',1),
-                                      'last_name': pilot_row['name'].split(',',1),
+                        pilot_dict = {'first_name': pilot_row['name'].rsplit(',',1)[0],
+                                      'last_name': pilot_row['name'].split(',',1)[0],
                                       'nationality': pilot_row['country']}
                         pilot = Pilot(**pilot_dict)
                         pilot.contestant = contestant
