@@ -1,7 +1,7 @@
-# flake8: noqa
 import urllib.request, json
 from datetime import datetime
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location
+
 
 def get_strepla_contests_info():
     i = 0
@@ -14,6 +14,7 @@ def get_strepla_contests_info():
             data_dict = data[i]
             print(str(data_dict['id']) + ": " + str(data_dict['name']) + " - " + str(data_dict['Location']))
             i += 1
+
 
 def get_strepla_contest(cID):
     contests = list()
@@ -84,7 +85,8 @@ def get_strepla_contest_classes(cID):
             print(data_dict)
             i += 1
 
-def get_strepla_contestants(cID,*cc):
+
+def get_strepla_contestants(cID, *cc):
     # Get contestants of entire competition
     # https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=403
     if (len(cc) != 0):
