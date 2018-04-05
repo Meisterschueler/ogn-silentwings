@@ -1,4 +1,4 @@
-from app.model import Contest, Contestant, Beacon, Task
+from app.model import Contest, Contestant, Beacon
 from app import db
 
 from datetime import timezone
@@ -64,7 +64,7 @@ def create_tracker_data(tracker_id):
     return '\n'.join(result_list)
 
 
-def create_cuc_pilots_block(contest_name_with_class_type):
+def create_cuc_pilots_block():
     # TODO: Needs contest_name_with_class_type as input to find correct contestants per class
     result_list = list()
     result_list.append("[Pilots]")
@@ -85,7 +85,8 @@ def create_cuc_pilots_block(contest_name_with_class_type):
     # print("\n".join(result_list))
     return "\n".join(result_list)
 
-def create_cuc(contestname,date):
+
+def create_cuc(contestname, date):
     result_list = list()
     # Generate Header of CUC file
     entry = "[Options]\nTitle=Angel Casado OGN-SGP test\nPeriodFrom=0\nPeriodTo=401521\nAvtoSaveFlight=True\nAvtoSaveTime=60\nAvtoPublishTime=-300\nTakeoffAlt=0m\nTaskPicWidth=600\nTaskPicHeight=400\nTaskPicCompression=90\nTaskPicBorder=12\nUtcOffset=1\nNeedLegs=False\nStrictName=False\nUseBinFiles=True\nCommentPrefix=1\n\n[Warnings]\nHighEnl=300\nAsViolate=True\nMinFinAlt=0m\nMaxFinAlt=10000m\nMaxStartAlt=0m\nMaxAlt=0m\nMaxAltCorr=50.0m\nAltTimeout=0\nStartGsp=0km/h\nFixRate=10\nValFailed=True\n\n[SearchPath]\n\\psf\Home\Desktop\Flights\ \n"
@@ -96,7 +97,7 @@ def create_cuc(contestname,date):
     result_list.append(entry)
 
     #  Generate [Date] Block of CUC file
-    entry = "[Day_" + date[6:8] + "/" + date [4:6] + "/" + date[0:4] + "]\nD" + date[6:8] + date [4:6] + date[0:4] + "-010400000"
+    entry = "[Day_" + date[6:8] + "/" + date[4:6] + "/" + date[0:4] + "]\nD" + date[6:8] + date[4:6] + date[0:4] + "-010400000"
     result_list.append(entry)
 
     # Generate Footer of CUC file
@@ -104,7 +105,7 @@ def create_cuc(contestname,date):
     result_list.append(entry)
     entry = 'E000,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE001,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE002,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE003,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE004,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\nE005,0,,,0,0,-1,-1,-1,-1,0,0,-1,-1,0,0,-1,-1,0,0,"",-1,-1,"",-1,,,,,,\n'
     result_list.append(entry)
-    
+
     print("=========================")
     print("\n".join(result_list))
     print("=========================")
