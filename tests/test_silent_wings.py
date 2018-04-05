@@ -163,9 +163,11 @@ class TestDB(unittest.TestCase):
     def test_cuc_pilots_block(self):
         message = create_cuc_pilots_block()
         cuc_pilots_block = ('[Pilots]\n'
-                            '"Konstantin","Gründger",123,"FLRDD0815","ASG 29","D-KONI","KG","",0,"",0,"",1,"",""\n'
-                            '"Dagobert","Duck",123,"FLRDD4711","ASK 13","D-1900","XX","",0,"",0,"",1,"",""')
-        self.assertEqual(message, cuc_pilots_block)
+                            '"Konstantin","Gründger",*0,"FLRDD0815","ASG 29","D-KONI","KG","",0,"",0,"",1,"",""\n'
+                            '"Dagobert","Duck",*0,"FLRDD4711","ASK 13","D-1900","XX","",0,"",0,"",1,"",""\n'
+                            '\n'
+                            '[Starts]\n')
+        self.assertMultiLineEqual(message, cuc_pilots_block)
 
     def test_silent_wings_studio(self):
         message = create_eventgroups_json()
