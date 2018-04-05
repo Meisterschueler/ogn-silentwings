@@ -38,9 +38,7 @@ def create_contest_info_string(contest_name_with_class_type):
                 for task in contest.classes[0].tasks:
                     result_string += "{{date}}{0}{{/date}}".format(task.task_date.strftime("%Y%m%d"))
                     result_string += "{{task}}{0}{{/task}}".format(1)
-                    # Modified the next line for debugging purposes - forces output of valid day
-                    result_string += "{{validday}}1{{/validday}}"
-                    # result_string += "{{validday}}{0}{{/validday}}".format(0)
+                    result_string += "{{validday}}{0}{{/validday}}".format(1)
                     # "{date}20050903{/date}{task}1{/task}{validday}0{/validday}{date}20050904{/date}{task}1{/task}{validday}0{/validday}\
 
     return result_string
