@@ -9,6 +9,7 @@ def get_strepla_contests_info():
         data = json.loads(url.read().decode())
         print("\nID : Name of competition - Place of competition")
         print("=================================================================")
+        # TODO: Put for loop here.
         while i < len(data):
             data_dict = data[i]
             print(str(data_dict['id']) + ": " + str(data_dict['name']) + " - " + str(data_dict['Location']))
