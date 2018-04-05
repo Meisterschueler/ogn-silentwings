@@ -5,7 +5,7 @@ from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location
 
 def get_strepla_contests_info():
     i = 0
-    with urllib.request.urlopen("https://www.strepla.de/scs/ws/competition.ashx?cmd=recent&daysPeriod=360") as url:
+    with urllib.request.urlopen("http://www.strepla.de/scs/ws/competition.ashx?cmd=recent&daysPeriod=360") as url:
         data = json.loads(url.read().decode())
         print("\nID : Name of competition - Place of competition")
         print("=================================================================")
@@ -17,7 +17,7 @@ def get_strepla_contests_info():
 def get_strepla_contest(cID):
     contests = list()
     # Process contest location and date info
-    with urllib.request.urlopen("https://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(cID) + "&daysPeriod=360") as url:
+    with urllib.request.urlopen("http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(cID) + "&daysPeriod=360") as url:
         contest_data = json.loads(url.read().decode())[0]
         # print(contest_data)
         contest_dict = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
@@ -30,7 +30,7 @@ def get_strepla_contest(cID):
         contest.location = location
 
         # Process contest class info
-        with urllib.request.urlopen("https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)) as url:
+        with urllib.request.urlopen("http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)) as url:
             class_data = json.loads(url.read().decode())
             for contest_class_row in class_data:
                 # print("contest_class_row:\n", contest_class_row)
@@ -43,7 +43,7 @@ def get_strepla_contest(cID):
                 # print(contest_class_row['name'])
                 # Process pilots of class
                 # print("https://www.strepla.de/scs/ws/pilot.ashx?cmda=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name']))
-                with urllib.request.urlopen("https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name'])) as url:
+                with urllib.request.urlopen("http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name'])) as url:
                     pilot_data = json.loads(url.read().decode())
                     # print(pilot_data) 
                     if (len(pilot_data) == 0):
