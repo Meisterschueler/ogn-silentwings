@@ -82,6 +82,7 @@ class TestDB(unittest.TestCase):
         cuc_pilots_block = ('[Pilots]\n'
                             '"Konstantin","Gründger",*0,"FLRDD0815","Eta","D-KONI","KG","",0,"",0,"",1,"",""\n'
                             '"Dagobert","Duck",*0,"FLRDD4711","Nimeta","D-1900","XX","",0,"",0,"",1,"",""\n'
+                            '"Gundel","Gaukelei",*0,"OGN0123","ASG 29","D-KUGL","GL","",0,"",0,"",1,"",""\n'
                             '\n'
                             '[Starts]\n')
         self.assertMultiLineEqual(message, cuc_pilots_block)
