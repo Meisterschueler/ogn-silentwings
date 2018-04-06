@@ -1,6 +1,8 @@
-import urllib.request, json
+import urllib.request
+import requests
+import json
 from datetime import datetime
-from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location
+from app.model import Contest, ContestClass, Contestant, Pilot, Location
 
 
 def get_strepla_contests_info():
@@ -16,19 +18,34 @@ def get_strepla_contests_info():
             i += 1
 
 
+def get_strepla_contests_info2():
+    url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=recent&daysPeriod=360"
+    r = requests.get(url)
+    json_data = json.loads(r.text.encode('utf-8'))
+
+    contests = list()
+    for contest_row in json_data:
+        parameters = {'name': contest_row['name'],
+                      'start_date': datetime.strptime(contest_row['firstDay'], "%Y-%m-%dT%H:%M:%S"),
+                      'end_date': datetime.strptime(contest_row['lastDay'], "%Y-%m-%dT%H:%M:%S")}
+        contest = Contest(**parameters)
+        contests.append(contest)
+    return contests
+
+
 def get_strepla_contest(cID):
     contests = list()
     # Process contest location and date info
     with urllib.request.urlopen("http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(cID) + "&daysPeriod=360") as url:
         contest_data = json.loads(url.read().decode())[0]
         # print(contest_data)
-        contest_dict = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
-                        'name': contest_data['name'],
-                        'start_date': datetime.strptime(contest_data['firstDay'], "%Y-%m-%dT%H:%M:%S")}
-        contest = Contest(**contest_dict)
+        parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
+                      'name': contest_data['name'],
+                      'start_date': datetime.strptime(contest_data['firstDay'], "%Y-%m-%dT%H:%M:%S")}
+        contest = Contest(**parameters)
 
-        location_dict = {'name': contest_data['Location']}
-        location = Location(**location_dict)
+        parameters = {'name': contest_data['Location']}
+        location = Location(**parameters)
         contest.location = location
 
         # Process contest class info
@@ -36,10 +53,10 @@ def get_strepla_contest(cID):
             class_data = json.loads(url.read().decode())
             for contest_class_row in class_data:
                 # print("contest_class_row:\n", contest_class_row)
-                contest_class_dict = {'category': contest_class_row['rulename'],
-                                  'type': contest_class_row['name']}
+                parameters = {'category': contest_class_row['rulename'],
+                              'type': contest_class_row['name']}
 
-                contest_class = ContestClass(**contest_class_dict)
+                contest_class = ContestClass(**parameters)
                 contest_class.contest = contest
 
                 # print(contest_class_row['name'])
@@ -47,7 +64,7 @@ def get_strepla_contest(cID):
                 # print("https://www.strepla.de/scs/ws/pilot.ashx?cmda=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name']))
                 with urllib.request.urlopen("http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name'])) as url:
                     pilot_data = json.loads(url.read().decode())
-                    # print(pilot_data) 
+                    # print(pilot_data)
                     if (len(pilot_data) == 0):
                         print("Class name not recognized. Aborting.")
                         return
@@ -55,18 +72,18 @@ def get_strepla_contest(cID):
                     for pilot_row in pilot_data:
                         # print(str(pilot_row['glider_callsign']) + ": " + str(pilot_row['logger1']) + " - " + str(pilot_row['name']))
                         # print(pilot_row)
-                        contestant_dict = {'aircraft_model': pilot_row['glider_name'],
-                                           'aircraft_registration' : pilot_row['glider_callsign'],
-                                           'contestant_number': pilot_row['glider_cid'],
-                                           'handicap': pilot_row['glider_index'],
-                                           'live_track_id': pilot_row['flarm_ID']}
-                        contestant = Contestant(**contestant_dict)
+                        parameters = {'aircraft_model': pilot_row['glider_name'],
+                                      'aircraft_registration': pilot_row['glider_callsign'],
+                                      'contestant_number': pilot_row['glider_cid'],
+                                      'handicap': pilot_row['glider_index'],
+                                      'live_track_id': pilot_row['flarm_ID']}
+                        contestant = Contestant(**parameters)
                         contestant.contest_class = contest_class
 
-                        pilot_dict = {'first_name': pilot_row['name'].rsplit(',',1)[0],
-                                      'last_name': pilot_row['name'].split(',',1)[0],
+                        parameters = {'first_name': pilot_row['name'].rsplit(',', 1)[0],
+                                      'last_name': pilot_row['name'].split(',', 1)[0],
                                       'nationality': pilot_row['country']}
-                        pilot = Pilot(**pilot_dict)
+                        pilot = Pilot(**parameters)
                         pilot.contestant = contestant
 
         contests.append(contest)
@@ -86,10 +103,10 @@ def get_strepla_contest_classes(cID):
             i += 1
 
 
-def get_strepla_contestants(cID, *cc):
+def get_strepla_contestants(cID, cc=None):
     # Get contestants of entire competition
     # https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=403
-    if (len(cc) != 0):
+    if cc is not None:
         ccc = cc[0]
         with urllib.request.urlopen("https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(ccc)) as url:
             data = json.loads(url.read().decode())
@@ -120,4 +137,3 @@ def get_strepla_contestants(cID, *cc):
 
 # Get task of specific day of specific contest
 # https://www.strepla.de/scs/ws/results.ashx?cmd=task&cID=400&idDay=5917&activeTaskOnly=false
-
