@@ -4,7 +4,7 @@ from unittest import mock
 from app import create_app, db
 from app.soaringspot import get_soaringspot_document, get_soaringspot_contests
 
-from .helper import print_contest
+from tests.helper import print_contest
 
 
 class root_document:
@@ -56,7 +56,8 @@ class TestDB(unittest.TestCase):
                                          contestant_document, no_task_document]
 
         contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        print_contest(contests)
+        for contest in contests:
+            print_contest(contest)
 
         db.session.add_all(contests)
         db.session.commit()
@@ -67,7 +68,8 @@ class TestDB(unittest.TestCase):
 
     def test_remote_objects(self):
         contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        print_contest(contests)
+        for contest in contests:
+            print_contest(contest)
 
         db.session.add_all(contests)
         db.session.commit()

@@ -4,7 +4,7 @@ from unittest import mock
 from app import create_app, db
 from app.strepla import list_strepla_contests, get_strepla_contest
 
-from .helper import print_contest
+from tests.helper import print_contest
 
 """
 This should be the raw data required to mock the tests.
