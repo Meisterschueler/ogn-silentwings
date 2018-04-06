@@ -4,6 +4,8 @@ from unittest import mock
 from app import create_app, db
 from app.soaringspot import get_soaringspot_document, get_soaringspot_contests
 
+from .helper import print_contest
+
 
 class root_document:
     text = '{"_links":{"self":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/"},"http:\\/\\/api.soaringspot.com\\/rel\\/contests":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests"},"http:\\/\\/api.soaringspot.com\\/rel\\/tasks":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/tasks"}},"_embedded":{"http:\\/\\/api.soaringspot.com\\/rel\\/contests":[{"id":1891,"name":"SoaringSpot 3D Tracking Interface","start_date":"2018-03-03","end_date":"2018-03-16","featured":false,"time_zone":"Asia\\/Kabul","country":"AF","category":"glider","_links":{"self":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891"},"http:\\/\\/api.soaringspot.com\\/rel\\/classes":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891\\/classes"},"http:\\/\\/api.soaringspot.com\\/rel\\/location":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/locations\\/23221"},"http:\\/\\/api.soaringspot.com\\/rel\\/winners":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891\\/winners"},"http:\\/\\/api.soaringspot.com\\/rel\\/downloads":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891\\/downloads"},"http:\\/\\/api.soaringspot.com\\/rel\\/upload\\/flight":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891\\/flights"},"http:\\/\\/api.soaringspot.com\\/rel\\/www":{"href":"http:\\/\\/www.test.soaringspot.com\\/en_gb\\/soaringspot-3d-tracking-interface-pain-guzar-2018\\/"}},"_embedded":{"http:\\/\\/api.soaringspot.com\\/rel\\/classes":[{"id":3471,"category":"glider","type":"open","_links":{"self":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3471"},"http:\\/\\/api.soaringspot.com\\/rel\\/contest":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891"},"http:\\/\\/api.soaringspot.com\\/rel\\/contestants":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3471\\/contestants"},"http:\\/\\/api.soaringspot.com\\/rel\\/tasks":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3471\\/tasks"},"http:\\/\\/api.soaringspot.com\\/rel\\/class_results":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3471\\/results"}}},{"id":3470,"category":"glider","type":"18_meter","_links":{"self":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3470"},"http:\\/\\/api.soaringspot.com\\/rel\\/contest":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/contests\\/1891"},"http:\\/\\/api.soaringspot.com\\/rel\\/contestants":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3470\\/contestants"},"http:\\/\\/api.soaringspot.com\\/rel\\/tasks":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3470\\/tasks"},"http:\\/\\/api.soaringspot.com\\/rel\\/class_results":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/classes\\/3470\\/results"}}}],"http:\\/\\/api.soaringspot.com\\/rel\\/location":{"name":"P\\u0101\\u2019\\u012bn Guz\\u0304ar","time_zone":"Asia\\/Kabul","country":"AF","altitude":937,"latitude":0.6235190498079,"longitude":1.1184172821206,"_links":{"self":{"href":"http:\\/\\/api.test.soaringspot.com\\/v1\\/locations\\/23221"}}}}}]}}'
@@ -19,20 +21,6 @@ class task_document:
 
 class no_task_document:
     text = '{"code":404,"message":"Class with 3470 id does not have any tasks."}'
-
-
-def print_all_contests(contests):
-    for contest in contests:
-            print(contest)
-            print(contest.location)
-            for contest_class in contest.classes:
-                print(contest_class)
-                for task in contest_class.tasks:
-                    print(task)
-                for contestant in contest_class.contestants:
-                    print(contestant)
-                    for pilot in contestant.pilots:
-                        print(pilot)
 
 
 class TestDB(unittest.TestCase):
@@ -68,7 +56,7 @@ class TestDB(unittest.TestCase):
                                          contestant_document, no_task_document]
 
         contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        print_all_contests(contests)
+        print_contest(contests)
 
         db.session.add_all(contests)
         db.session.commit()
@@ -79,7 +67,7 @@ class TestDB(unittest.TestCase):
 
     def test_remote_objects(self):
         contests = get_soaringspot_contests(url=self.base_url, client_id=self.client_id, secret=self.secret)
-        print_all_contests(contests)
+        print_contest(contests)
 
         db.session.add_all(contests)
         db.session.commit()

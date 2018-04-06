@@ -6,7 +6,7 @@ import click
 from flask import request
 from app.silent_wings import create_active_contests_string, create_contest_info_string, create_cuc
 from app.soaringspot import get_soaringspot_contests
-from app.strepla import get_strepla_contests_info
+from app.strepla import list_strepla_contests
 from app.routes import gencuc
 from app.utils import logfile_to_beacons
 from datetime import date
@@ -75,10 +75,12 @@ def aprs_connect():
 
     client.disconnect()
 
+
 @app.cli.command()
 def strepla_contests():
     """List all StrePla contests to identify contest ID."""
-    print(get_strepla_contests_info())
+    list_strepla_contests()
+
 
 @app.cli.command()
 @click.option('--cID',  help='ID of Contest')
@@ -89,11 +91,12 @@ def import_strepla(cid):
         print("You must specify the contest ID with option '--cID'")
         print("Following contests are known:")
         # Output list of known contests
-        print(get_strepla_contests_info())
+        list_strepla_contests()
         return
 
     db.session.add_all(get_strepla_contest(cid))
     db.session.commit()
+
 
 @app.cli.command()
 @click.option('--contest',  help='Name of Contest')
@@ -140,6 +143,7 @@ def route_getactivecontests():
     print(active_contests)
     return active_contests
 
+
 @app.route("/getcontestinfo.php")
 @app.route("/getcontestinfo")
 def route_getcontestinfo():
@@ -159,6 +163,7 @@ def route_getcontestinfo():
         return create_cuc(contestname,date)
     else:
         return create_contest_info_string(contestname)
+
 
 @app.route("/gettrackerdata.php")
 def route_gettrackerdata():

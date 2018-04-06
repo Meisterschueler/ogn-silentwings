@@ -1,109 +1,86 @@
-import urllib.request
 import requests
 import json
 from datetime import datetime
 from app.model import Contest, ContestClass, Contestant, Pilot, Location
 
 
-def get_strepla_contests_info():
-    i = 0
-    with urllib.request.urlopen("http://www.strepla.de/scs/ws/competition.ashx?cmd=recent&daysPeriod=360") as url:
-        data = json.loads(url.read().decode())
-        print("\nID : Name of competition - Place of competition")
-        print("=================================================================")
-        # TODO: Put for loop here.
-        while i < len(data):
-            data_dict = data[i]
-            print(str(data_dict['id']) + ": " + str(data_dict['name']) + " - " + str(data_dict['Location']))
-            i += 1
-
-
-def get_strepla_contests_info2():
+def list_strepla_contests():
     url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=recent&daysPeriod=360"
     r = requests.get(url)
     json_data = json.loads(r.text.encode('utf-8'))
 
-    contests = list()
+    print("\nID : Name of competition - Place of competition")
+    print("=================================================================")
     for contest_row in json_data:
-        parameters = {'name': contest_row['name'],
-                      'start_date': datetime.strptime(contest_row['firstDay'], "%Y-%m-%dT%H:%M:%S"),
-                      'end_date': datetime.strptime(contest_row['lastDay'], "%Y-%m-%dT%H:%M:%S")}
-        contest = Contest(**parameters)
-        contests.append(contest)
-    return contests
+        print("{id}: {name} - {Location}".format(**contest_row))
 
 
-def get_strepla_contest(cID):
-    contests = list()
+def get_strepla_contest(competition_id):
+    contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=360"
+    r = requests.get(contest_url)
+    contest_data = json.loads(r.text.encode('utf-8'))[0]
+
     # Process contest location and date info
-    with urllib.request.urlopen("http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(cID) + "&daysPeriod=360") as url:
-        contest_data = json.loads(url.read().decode())[0]
-        # print(contest_data)
-        parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
-                      'name': contest_data['name'],
-                      'start_date': datetime.strptime(contest_data['firstDay'], "%Y-%m-%dT%H:%M:%S")}
-        contest = Contest(**parameters)
+    parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
+                  'name': contest_data['name'],
+                  'start_date': datetime.strptime(contest_data['firstDay'], "%Y-%m-%dT%H:%M:%S")}
+    contest = Contest(**parameters)
 
-        parameters = {'name': contest_data['Location']}
-        location = Location(**parameters)
-        contest.location = location
+    parameters = {'name': contest_data['Location']}
+    location = Location(**parameters)
+    contest.location = location
 
-        # Process contest class info
-        with urllib.request.urlopen("http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)) as url:
-            class_data = json.loads(url.read().decode())
-            for contest_class_row in class_data:
-                # print("contest_class_row:\n", contest_class_row)
-                parameters = {'category': contest_class_row['rulename'],
-                              'type': contest_class_row['name']}
+    # Process contest class info
+    contest_class_url = "http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&competition_id=" + str(competition_id)
+    r = requests.get(contest_class_url)
+    contest_class_data = json.loads(r.text.encode('utf-8'))
 
-                contest_class = ContestClass(**parameters)
-                contest_class.contest = contest
+    for contest_class_row in contest_class_data:
+        parameters = {'category': contest_class_row['rulename'],
+                      'type': contest_class_row['name']}
 
-                # print(contest_class_row['name'])
-                # Process pilots of class
-                # print("https://www.strepla.de/scs/ws/pilot.ashx?cmda=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name']))
-                with urllib.request.urlopen("http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(cID) + "&cc=" + str(contest_class_row['name'])) as url:
-                    pilot_data = json.loads(url.read().decode())
-                    # print(pilot_data)
-                    if (len(pilot_data) == 0):
-                        print("Class name not recognized. Aborting.")
-                        return
+        contest_class = ContestClass(**parameters)
+        contest_class.contest = contest
 
-                    for pilot_row in pilot_data:
-                        # print(str(pilot_row['glider_callsign']) + ": " + str(pilot_row['logger1']) + " - " + str(pilot_row['name']))
-                        # print(pilot_row)
-                        parameters = {'aircraft_model': pilot_row['glider_name'],
-                                      'aircraft_registration': pilot_row['glider_callsign'],
-                                      'contestant_number': pilot_row['glider_cid'],
-                                      'handicap': pilot_row['glider_index'],
-                                      'live_track_id': pilot_row['flarm_ID']}
-                        contestant = Contestant(**parameters)
-                        contestant.contest_class = contest_class
+        # Process pilots of class
+        contestant_url = "http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=" + str(competition_id) + "&cc=" + str(contest_class_row['name'])
+        r = requests.get(contestant_url)
+        contestant_data = json.loads(r.text.encode('utf-8'))
+        if (len(contestant_data) == 0):
+            print("Class name not recognized. Aborting.")
+            return
 
-                        parameters = {'first_name': pilot_row['name'].rsplit(',', 1)[0],
-                                      'last_name': pilot_row['name'].split(',', 1)[0],
-                                      'nationality': pilot_row['country']}
-                        pilot = Pilot(**parameters)
-                        pilot.contestant = contestant
+        for contestant_row in contestant_data:
+            parameters = {'aircraft_model': contestant_row['glider_name'],
+                          'aircraft_registration': contestant_row['glider_callsign'],
+                          'contestant_number': contestant_row['glider_cid'],
+                          'handicap': contestant_row['glider_index'],
+                          'live_track_id': contestant_row['flarm_ID']}
+            contestant = Contestant(**parameters)
+            contestant.contest_class = contest_class
 
-        contests.append(contest)
+            parameters = {'first_name': contestant_row['name'].rsplit(',', 1)[0],
+                          'last_name': contestant_row['name'].split(',', 1)[0],
+                          'nationality': contestant_row['country']}
+            pilot = Pilot(**parameters)
+            pilot.contestant = contestant
 
-    return contests
+    return contest
 
 
 # Get classes for a specific contest
-# https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=403
+# https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&competition_id=403
 def get_strepla_contest_classes(cID):
-    with urllib.request.urlopen("https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)) as url:
-        data = json.loads(url.read().decode())
-        i = 0
-        while i < len(data):
-            data_dict = data[i]
-            print(data_dict)
-            i += 1
+    url = "https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)
+    r = requests.get(url)
+    data = json.loads(r.text.encode('utf-8'))
+
+    for row in data:
+        print(row)
 
 
 def get_strepla_contestants(cID, cc=None):
+    import urllib
     # Get contestants of entire competition
     # https://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=403
     if cc is not None:
