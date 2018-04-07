@@ -1,4 +1,4 @@
-from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location
+from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
 
 import requests
 from datetime import datetime
@@ -46,6 +46,7 @@ def get_soaringspot_document(url, client_id, secret):
 
 def get_soaringspot_contests(url, client_id, secret):
     document = get_soaringspot_document(url, client_id, secret)
+    print(document)
     contests = list()
     for item in document.items():
         if item[0] == "contests":
@@ -78,7 +79,7 @@ def get_soaringspot_contests(url, client_id, secret):
                     contestants_doc = get_soaringspot_document(contest_class_row.links['contestants'].url, client_id, secret)
                     print(contestants_doc)
                     if 'code' in contestants_doc and contestants_doc['code'] == 404:
-                        print("No task")
+                        print("No contestant")
                     else:
                         for contestant_row in contestants_doc['contestants']:
                             contestant_dict = {'aircraft_model': contestant_row['aircraft_model'],
@@ -124,6 +125,36 @@ def get_soaringspot_contests(url, client_id, secret):
                                          'task_value': task_row['task_value']}
                             task = Task(**task_dict)
                             task.contest_class = contest_class
+
+                            points_doc = get_soaringspot_document(task_row.links['points'].url, client_id, secret)
+                            print(points_doc)
+                            if 'code' in points_doc and points_doc['code'] == 404:
+                                print("No points")
+                            else:
+                                for point_row in points_doc['points']:
+                                    parameters = {'name': point_row['name'],
+                                                  'latitude': point_row['latitude'],
+                                                  'longitude': point_row['longitude'],
+                                                  'elevation': point_row['elevation'],
+                                                  'point_index': point_row['point_index'],
+                                                  'type': point_row['type'],
+                                                  'multiple_start': point_row['multiple_start'],
+                                                  'distance': point_row['distance'],
+                                                  'course_in': point_row['course_in'],
+                                                  'course_out': point_row['course_out'],
+                                                  'oz_type': point_row['oz_type'],
+                                                  'oz_radius1': point_row['oz_radius1'],
+                                                  'oz_radius2': point_row['oz_radius2'],
+                                                  'oz_angle1': point_row['oz_angle1'],
+                                                  'oz_angle12': point_row['oz_angle12'],
+                                                  'oz_angle2': point_row['oz_angle2'],
+                                                  'oz_line': point_row['oz_line'],
+                                                  'oz_max_altitude': point_row['oz_max_altitude'],
+                                                  'oz_move': point_row['oz_move'],
+                                                  'oz_reduce': point_row['oz_reduce'],
+                                                  'speed_section_type': point_row['speed_section_type']}
+                                    turnpoint = Turnpoint(**parameters)
+                                    turnpoint.task = task
 
                 contests.append(contest)
 

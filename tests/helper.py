@@ -4,6 +4,21 @@ from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot,\
     Beacon
 
 
+def print_contest(contest):
+    print(contest)
+    print(contest.location)
+    for contest_class in contest.classes:
+        print(contest_class)
+        for task in contest_class.tasks:
+            print(task)
+            for turnpoint in task.turnpoints:
+                print(turnpoint)
+        for contestant in contest_class.contestants:
+            print(contestant)
+            for pilot in contestant.pilots:
+                print(pilot)
+
+
 def create_simple_contest():
     contest = Contest()
     contest.name = "My Fake Contest"
