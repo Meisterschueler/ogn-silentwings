@@ -3,7 +3,7 @@ import unittest
 from app import create_app, db
 from app.glidertracker import glidertracker_filter, glidertracker_contests
 
-from .helper import create_simple_contest, create_simple_tracker_data
+from tests.helper import create_simple_contest, create_simple_tracker_data
 
 
 class TestDB(unittest.TestCase):

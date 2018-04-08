@@ -5,7 +5,7 @@ from app.silent_wings import create_active_contests_string, create_contest_info_
     create_cuc_pilots_block, create_tracker_data
 from app.silent_wings_studio import create_eventgroups_json, create_event_json
 
-from .helper import create_simple_contest, create_simple_tracker_data
+from tests.helper import create_simple_contest, create_simple_tracker_data
 
 
 class TestDB(unittest.TestCase):
