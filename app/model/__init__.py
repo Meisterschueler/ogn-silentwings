@@ -6,3 +6,4 @@ from .pilot import Pilot
 from .task import Task
 from .beacon import Beacon
 from .location import Location
+from .turnpoint import Turnpoint
