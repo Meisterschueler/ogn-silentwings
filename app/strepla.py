@@ -68,10 +68,35 @@ def get_strepla_contest(competition_id):
     return contest
 
 
+
+def get_strepla_class_task(competition_id,contest_class_name):
+    # This function reads the tasks from a specific contest and class
+    # TODO: Generate useful error message, if arguments are not provided
+    all_task_url = "https://www.strepla.de/scs/ws/results.ashx?cmd=overviewDays&cID=" + str(competition_id) +  "&cc=" + str(contest_class_name)
+    r = requests.get(all_task_url)
+    all_task_data = json.loads(r.text.encode('utf-8'))
+    for all_task_data_item in all_task_data:
+        # print(task_data_item)
+        print(all_task_data_item['idCD'],all_task_data_item['date'],all_task_data_item['state'])    
+        if int(all_task_data_item['state']) == 0:
+            print("Task not planned for day " + all_task_data_item['date'] + ". Skipping.")
+            continue
+        
+        if int(all_task_data_item['state']) == 60:
+            print("Task neutralized for day " + all_task_data_item['date'] + ". Skipping.")
+            continue
+        
+        task_url = "http://www.strepla.de/scs/ws/results.ashx?cmd=task&cID=" + str(competition_id) + "&idDay=" + str(all_task_data_item['idCD']) + "&activeTaskOnly=true"
+        print(task_url)
+        r = requests.get(task_url)
+        task_data = json.loads(r.text.encode('utf-8'))
+        for task_data_item in task_data:
+            print(task_data_item)
+    
 # Get classes for a specific contest
 # https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&competition_id=403
 def get_strepla_contest_classes(cID):
-    url = "https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)
+    url = "http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cID=" + str(cID)
     r = requests.get(url)
     data = json.loads(r.text.encode('utf-8'))
 
