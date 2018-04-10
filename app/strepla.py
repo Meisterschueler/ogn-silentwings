@@ -1,7 +1,7 @@
 import requests
 import json
 from datetime import datetime
-from app.model import Contest, ContestClass, Contestant, Pilot, Location
+from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
 
 
 def list_strepla_contests():
@@ -69,12 +69,13 @@ def get_strepla_contest(competition_id):
 
 
 
-def get_strepla_class_task(competition_id,contest_class_name):
+def get_strepla_class_task(competition_id, contest_class_name):
     # This function reads the tasks from a specific contest and class
     # TODO: Generate useful error message, if arguments are not provided
     all_task_url = "https://www.strepla.de/scs/ws/results.ashx?cmd=overviewDays&cID=" + str(competition_id) +  "&cc=" + str(contest_class_name)
     r = requests.get(all_task_url)
     all_task_data = json.loads(r.text.encode('utf-8'))
+    tasks = list()
     for all_task_data_item in all_task_data:
         # print(task_data_item)
         print(all_task_data_item['idCD'],all_task_data_item['date'],all_task_data_item['state'])    
@@ -90,8 +91,47 @@ def get_strepla_class_task(competition_id,contest_class_name):
         print(task_url)
         r = requests.get(task_url)
         task_data = json.loads(r.text.encode('utf-8'))
-        for task_data_item in task_data:
+        print(task_data)
+        return
+        for task_data_item in task_data['tasks']:
             print(task_data_item)
+            parameters = {'result_status': all_task_data_item['state'],
+                          'task_date': datetime.strptime(all_task_data_item['date'], "%Y-%m-%dT%H:%M:%S"),
+                          'task_distance': task_data_item['distance']}
+            
+            task = Task(**parameters)
+
+            point_index = 0
+            for tps in task_data_item['tps']:
+                print("=== tps ===")
+                print(tps)
+                if tps['scoring']['type'] == 'LINE':
+                    parameters = {'oz_line': tps['scoring']['width']}
+                
+                elif tps['scoring']['type'] == 'AAT SECTOR':
+                    # TODO
+                    pass
+                
+                tp_parameters = {'name': tps['scoring']['tp']['name'],
+                                 'latitude': tps['scoring']['tp']['lat'],
+                                 'longitude': tps['scoring']['tp']['lng'],
+                                 'point_index': point_index}
+                    
+                point_index += 1
+                parameters.update(tp_parameters)
+                turnpoint = Turnpoint(**parameters)
+                turnpoint.task = task
+                    
+                
+            # task.contest_class = contest_class
+            print(task)
+            tasks.append(task)
+            
+    return tasks
+
+    
+    
+    
     
 # Get classes for a specific contest
 # https://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&competition_id=403
