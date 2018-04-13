@@ -92,9 +92,8 @@ def get_strepla_class_task(competition_id, contest_class_name):
         r = requests.get(task_url)
         task_data = json.loads(r.text.encode('utf-8'))
         print(task_data)
-        return
         for task_data_item in task_data['tasks']:
-            print(task_data_item)
+            # print(task_data_item)
             parameters = {'result_status': all_task_data_item['state'],
                           'task_date': datetime.strptime(all_task_data_item['date'], "%Y-%m-%dT%H:%M:%S"),
                           'task_distance': task_data_item['distance']}
@@ -103,28 +102,47 @@ def get_strepla_class_task(competition_id, contest_class_name):
 
             point_index = 0
             for tps in task_data_item['tps']:
-                print("=== tps ===")
-                print(tps)
+                # print("=== tps ===")
+                # print(tps)
                 if tps['scoring']['type'] == 'LINE':
-                    parameters = {'oz_line': tps['scoring']['width']}
+                    parameters = {'oz_line': tps['scoring']['width'],
+                                  'type': tps['scoring']['type']}
                 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
-                    # TODO
-                    pass
-                
-                tp_parameters = {'name': tps['scoring']['tp']['name'],
-                                 'latitude': tps['scoring']['tp']['lat'],
-                                 'longitude': tps['scoring']['tp']['lng'],
+                    parameters = {'type': tps['scoring']['type'],
+                                  'oz_radius1': tps['scoring']['radius'],
+                                  'oz_angle1': tps['scoring']['radial1'],
+                                  'oz_angle2': tps['scoring']['radial2']}
+                    
+                elif tps['scoring']['type'] == 'KEYHOLE':
+                    parameters = {'type': tps['scoring']['type'],
+                                  'oz_radius1': tps['scoring']['radiusCylinder'],
+                                  'oz_radius2': tps['scoring']['radiusSector'],
+                                  'oz_angle1': tps['scoring']['angle']}
+                    
+                    # print("Keyhole TP recognizes.")
+                    
+                elif tps['scoring']['type'] == 'CYLINDER':
+                    parameters = {'type': tps['scoring']['type'],
+                                  'oz_radius1': tps['scoring']['radius']}
+ 
+                    # print("Cylinder TP recognizes.")
+                   
+                tp_parameters = {'name': tps['tp']['name'],
+                                 'latitude': tps['tp']['lat'],
+                                 'longitude': tps['tp']['lng'],
                                  'point_index': point_index}
                     
                 point_index += 1
                 parameters.update(tp_parameters)
                 turnpoint = Turnpoint(**parameters)
+                # print("=== Turnpoint ===")
+                # print(turnpoint)
                 turnpoint.task = task
                     
                 
             # task.contest_class = contest_class
-            print(task)
+            # print(task)
             tasks.append(task)
             
     return tasks
