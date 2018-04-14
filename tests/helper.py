@@ -10,7 +10,6 @@ def print_contest(contest):
     for contest_class in contest.classes:
         print(contest_class)
         for task in contest_class.tasks:
-            print(task)
             for turnpoint in task.turnpoints:
                 print(turnpoint)
         for contestant in contest_class.contestants:

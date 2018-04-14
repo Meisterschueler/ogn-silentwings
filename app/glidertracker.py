@@ -1,4 +1,4 @@
-from app.model import Contest, Contestant
+from app.model import Contest
 from app import db
 
 
@@ -20,19 +20,18 @@ def glidertracker_filter(contest_name_with_class_type):
     for contest in db.session.query(Contest):
         for contest_class in contest.classes:
             if contest.name.replace(" ", "").upper() == short_name and contest_class.type.replace("_", "").replace("-", "").upper() == contest_class_type:
-                print("This is our contest: " + contest_name)
-                print("This is our class: " + contest_class_type)
+                # print("This is our contest: " + contest_name)
+                # print("This is our class: " + contest_class_type)
 
-                for contestant in db.session.query(Contestant):
-                    # pilot = contestant.pilots[0]
-
-                    entry_dict = {'live_track_id': contestant.live_track_id,
+                for contestant in contest_class.contestants:
+                    parameters = {'live_track_id': contestant.live_track_id,
                                   'aircraft_registration': contestant.aircraft_registration,
                                   'contestant_number': contestant.contestant_number,
                                   'aircraft_model': contestant.aircraft_model}
 
-                    entry = '"{live_track_id}","{aircraft_registration}","{contestant_number}","{aircraft_model}"'.format(**entry_dict)
+                    entry = '"{live_track_id}","{aircraft_registration}","{contestant_number}","{aircraft_model}"'.format(**parameters)
                     result_list.append(entry)
+
     print("\n".join(result_list).replace('"', ""))
     return "\n".join(result_list)
 
