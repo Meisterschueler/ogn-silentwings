@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from app.model import Contest, Location, ContestClass, Task, Contestant, Pilot,\
-    Beacon
+    Beacon, Turnpoint
 
 
 def print_contest(contest):
@@ -87,6 +87,35 @@ def create_simple_contest():
     task_1.task_type = "High speed"
     task_1.task_date = date(2005, 9, 3)
     task_1.contest_class = open_class
+
+    turnpoint_11 = Turnpoint()
+    turnpoint_11.name = "Burgfeuerstein"
+    turnpoint_11.type = "start"
+    turnpoint_11.point_index = 0
+    turnpoint_11.task = task_1
+
+    turnpoint_11 = Turnpoint()
+    turnpoint_11.name = "Bayreuth"
+    turnpoint_11.type = "point"
+    turnpoint_11.point_index = 1
+    turnpoint_11.task = task_1
+
+    turnpoint_11 = Turnpoint()
+    turnpoint_11.name = "Dobenreuth Hall"
+    turnpoint_11.type = "point"
+    turnpoint_11.point_index = 2
+    turnpoint_11.task = task_1
+
+    turnpoint_11 = Turnpoint()
+    turnpoint_11.name = "Burgfeuerstein"
+    turnpoint_11.type = "finish"
+    turnpoint_11.point_index = 3
+    turnpoint_11.task = task_1
+
+    # <Turnpoint None: Burghfeuerstein,0.86904799938202,0.19420191645622,493,3,finish,False,42703.80859375,4.1906170845032,0,previous,3000,0,0.78539816339745,1.0490244309134,0,False,0,False,False,point>
+    # <Turnpoint None: Bayreuth,0.87240779399872,0.20317581295967,482,2,point,False,48275.25,0.84343463182449,4.1906170845032,symmetric,3000,0,0.78539816339745,4.0878224372864,0,False,0,False,False,point>
+    # <Turnpoint None: Dobenreuth Halle,0.8673899769783,0.19440059363842,321,1,point,False,10597.842773438,3.0640232563019,0.84343463182449,symmetric,3000,0,0.78539816339745,0.38293236494064,0,False,0,False,False,finish>
+    # <Turnpoint None: Burghfeuerstein,0.86904799938202,0.19420191645622,493,0,start,False,0,0,3.0640232563019,next,3000,0,0.78539816339745,3.0640232563019,0,False,0,False,False,start>
 
     task_2 = Task()
     task_2.no_start = datetime(2015, 9, 4, 10, 0, 0)
