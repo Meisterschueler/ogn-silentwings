@@ -50,15 +50,20 @@ class contestants_dosi_response:
 
 class task_class_response1:
     # http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=400&cc=STD
-    text = '[{"DT_RowId": 1, "idCD": "5368", "date": "2017-06-11T00:00:00", "idCC": "850", "nameCC": "STD", "state": "0", "sState": "Ungeplant"}, {"DT_RowId": 6, "idCD": "5899", "date": "2017-06-18T00:00:00", "idCC": "850", "nameCC": "STD", "state": "30", "sState": "Vorläufige Wertung"}, {"DT_RowId": 8, "idCD": "5917", "date": "2017-06-20T00:00:00", "idCC": "850", "nameCC": "STD", "state": "50", "sState": "Endgültige Wertung"}, {"DT_RowId": 11, "idCD": "5935", "date": "2017-06-23T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}, {"DT_RowId": 13, "idCD": "5950", "date": "2017-06-25T00:00:00", "idCC": "850", "nameCC": "STD", "state": "50", "sState": "Endgültige Wertung"}, {"DT_RowId": 14, "idCD": "5956", "date": "2017-06-26T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}, {"DT_RowId": 15, "idCD": "5962", "date": "2017-06-27T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}, {"DT_RowId": 16, "idCD": "5968", "date": "2017-06-28T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}, {"DT_RowId": 17, "idCD": "5980", "date": "2017-06-29T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}, {"DT_RowId": 18, "idCD": "5974", "date": "2017-06-30T00:00:00", "idCC": "850", "nameCC": "STD", "state": "50", "sState": "Endgültige Wertung"}, {"DT_RowId": 19, "idCD": "5998", "date": "2017-07-01T00:00:00", "idCC": "850", "nameCC": "STD", "state": "0", "sState": "Ungeplant"}]'
+    text = '[{"DT_RowId": 1, "idCD": "5368", "date": "2017-06-11T00:00:00", "idCC": "850", "nameCC": "STD", "state": "0", "sState": "Ungeplant"}, {"DT_RowId": 6, "idCD": "5899", "date": "2017-06-18T00:00:00", "idCC": "850", "nameCC": "STD", "state": "30", "sState": "Vorläufige Wertung"}, {"DT_RowId": 8, "idCD": "5917", "date": "2017-06-20T00:00:00", "idCC": "850", "nameCC": "STD", "state": "50", "sState": "Endgültige Wertung"}, {"DT_RowId": 11, "idCD": "5935", "date": "2017-06-23T00:00:00", "idCC": "850", "nameCC": "STD", "state": "60", "sState": "Neutralisiert"}]'
 
 # TODO introduce more responses for different days
 
 
 class task_class_response2:
-    # http://www.strepla.de/scs/ws/pilot.ashx?cmd=competitors&cId=400&cc=STD
+    # http://www.strepla.de/scs/ws/results.ashx?cmd=task&cID=400&idDay=5899&activeTaskOnly=true
+    # idCD = 5899
     text = '{"activeTask": 6532, "tasks": [{"id": "6532", "name": "Tagesaufgabe A", "distance": "267 km", "numLegs": "3", "tps": [{"scoring": {"type": "LINE", "width": 20000}, "tp": {"id": "178684", "name": "AP Werdau Eisenbahnbruecke", "lat": 50.7166666666667, "lng": 12.3733333333333}}, {"scoring": {"type": "KEYHOLE", "radiusCylinder": 500, "radiusSector": 10000, "angle": 90}, "tp": {"id": "179026", "name": "Speichersdorf Bf", "lat": 49.87, "lng": 11.7758333333333}}, {"scoring": {"type": "KEYHOLE", "radiusCylinder": 500, "radiusSector": 10000, "angle": 90}, "tp": {"id": "179023", "name": "Sonneberg Bf", "lat": 50.355, "lng": 11.1683333333333}}, {"scoring": {"type": "CYLINDER", "radius": 5000}, "tp": {"id": "178672", "name": "Zwickau FP EDBI", "lat": 50.7033333333333, "lng": 12.4591666666667}}]}]}'
 
+class task_class_response3:
+    # http://www.strepla.de/scs/ws/results.ashx?cmd=task&cID=400&idDay=5917&activeTaskOnly=true
+    # idCD = 5917
+    text = '{"activeTask": 6553, "tasks": [{"id": "6553", "name": "Tagesaufgabe A", "distance": "361 km", "numLegs": "4", "tps": [{"scoring": {"type": "LINE", "width": 20000}, "tp": {"id": "178687", "name": "AP Zwickau West A72 BAB010", "lat": 50.6383333333333, "lng": 12.44}}, {"scoring": {"type": "KEYHOLE", "radiusCylinder": 500, "radiusSector": 10000, "angle": 90}, "tp": {"id": "178900", "name": "Marienberg Markt", "lat": 50.6508333333333, "lng": 13.1633333333333}}, {"scoring": {"type": "KEYHOLE", "radiusCylinder": 500, "radiusSector": 10000, "angle": 90}, "tp": {"id": "179023", "name": "Sonneberg Bf", "lat": 50.355, "lng": 11.1683333333333}}, {"scoring": {"type": "KEYHOLE", "radiusCylinder": 500, "radiusSector": 10000, "angle": 90}, "tp": {"id": "179038", "name": "Suhl Bf", "lat": 50.605, "lng": 10.6825}}, {"scoring": {"type": "CYLINDER", "radius": 5000}, "tp": {"id": "178672", "name": "Zwickau FP EDBI", "lat": 50.7033333333333, "lng": 12.4591666666667}}]}]}'
 
 class TestDB(unittest.TestCase):
     def setUp(self):
@@ -88,7 +93,7 @@ class TestDB(unittest.TestCase):
 
     @mock.patch('app.strepla.requests')
     def test_get_strepla_class_task(self, requests_mock):
-        requests_mock.get.side_effect = [task_class_response1, task_class_response2]
+        requests_mock.get.side_effect = [task_class_response1, task_class_response2, task_class_response3]
 
         tasks = get_strepla_class_task(400, 'STD')
         print(tasks)
