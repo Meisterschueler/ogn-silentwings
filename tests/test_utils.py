@@ -57,13 +57,12 @@ class TestDB(unittest.TestCase):
         db_beacons = db.session.query(Beacon).all()
         self.assertEqual(len(db_beacons), 6014)
 
-
     @mock.patch('app.utils.requests')
     def test_ddb_import(self, requests_mock):
         requests_mock.get.side_effect = [ogn_ddb_response]
 
         ddb_entries = ddb_import()
-        # irgendwas mit assertequal
+        self.assertEqual(len(ddb_entries), 6, "Pass")
 
 
 if __name__ == '__main__':
