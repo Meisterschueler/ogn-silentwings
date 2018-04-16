@@ -14,12 +14,18 @@ def list_strepla_contests():
     for contest_row in json_data:
         print("{id}: {name} - {Location}".format(**contest_row))
 
-
 def get_strepla_contest(competition_id):
+    from app.utils import ddb_import
     contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=360"
+    # print(contest_url)
     r = requests.get(contest_url)
+    # Test if contest is present
+    if (len(r.text)) == 2:
+        print("This contest does not exist. Error. Aborting ....")
+        return
+    
     contest_data = json.loads(r.text.encode('utf-8'))[0]
-
+    
     # Process contest location and date info
     parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
                   'name': contest_data['name'],
@@ -31,9 +37,12 @@ def get_strepla_contest(competition_id):
     contest.location = location
 
     # Process contest class info
-    contest_class_url = "http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&competition_id=" + str(competition_id)
+    contest_class_url = "http://www.strepla.de/scs/ws/compclass.ashx?cmd=overview&cid=" + str(competition_id)
+    # print(contest_class_url)
     r = requests.get(contest_class_url)
     contest_class_data = json.loads(r.text.encode('utf-8'))
+    
+    ddb_entries = ddb_import()
 
     for contest_class_row in contest_class_data:
         parameters = {'category': contest_class_row['rulename'],
@@ -58,6 +67,26 @@ def get_strepla_contest(competition_id):
                           'live_track_id': contestant_row['flarm_ID']}
             contestant = Contestant(**parameters)
             contestant.contest_class = contest_class
+            
+            # Do some checks of the live_track_id
+            if parameters['live_track_id']:
+                print("Live_track_id defined via StrePla API")
+                # Check if live_track_id is also in OGN DDB
+                if parameters['live_track_id'] in ddb_entries.keys():
+                    if parameters['aircraft_registration'] == ddb_entries[parameters['live_track_id']]:
+                        print("Live_track_id is also in OGN DDB. Registrations match. Plausible id.")
+                    else:
+                        print("Live_track_id is also in OGN DDB. Registrations DOES NOT match. Check id.")
+                else:
+                    print("Live_track_id is not in OGN DDB. Plausibility check not possible.")
+            else:
+                # Live_track_id not provided. Performing Lookup on OGN DDB.
+                if contestant_row['glider_callsign'] in ddb_entries.values():
+                    live_track_id = list(ddb_entries.keys())[list(ddb_entries.values()).index(contestant_row['glider_callsign'])]
+                    print(parameters['aircraft_registration'], "Live_track_id not provided. OGN DDB lookup found: ", live_track_id)
+                    parameters = {'live_track_id': live_track_id}
+                else:
+                    print(parameters['aircraft_registration'], "Aircraft registration not found in OGN DDB.")
 
             parameters = {'first_name': contestant_row['name'].rsplit(',', 1)[0],
                           'last_name': contestant_row['name'].split(',', 1)[0],

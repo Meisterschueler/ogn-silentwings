@@ -1,5 +1,20 @@
 from datetime import date
 
+# Imports OGN DDB into dict
+def ddb_import():
+    import requests
+    import csv
+    from io import StringIO
+    ddb_url = "http://ddb.glidernet.org/download/"
+    r = requests.get(ddb_url)
+    rows = '\n'.join(i for i in r.text.splitlines() if i[0] != '#')
+    data = csv.reader(StringIO(rows), quotechar="'", quoting=csv.QUOTE_ALL)
+
+    ddb_entries = dict()
+    for row in data:
+        ddb_entries[row[1]] = row[3]
+        
+    return ddb_entries
 
 def process_beacon(raw_message, reference_date=None):
     from ogn.parser import parse, ParseError
