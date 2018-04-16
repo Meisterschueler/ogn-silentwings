@@ -1,10 +1,11 @@
 from datetime import date
+import requests
+import csv
+from io import StringIO
+
 
 # Imports OGN DDB into dict
 def ddb_import():
-    import requests
-    import csv
-    from io import StringIO
     ddb_url = "http://ddb.glidernet.org/download/"
     r = requests.get(ddb_url)
     rows = '\n'.join(i for i in r.text.splitlines() if i[0] != '#')

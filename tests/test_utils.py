@@ -1,15 +1,15 @@
 import unittest
-
+from unittest import mock
 from datetime import date
 
 from app import create_app, db
-from app.utils import process_beacon, logfile_to_beacons
+from app.utils import process_beacon, logfile_to_beacons, ddb_import
 from app.model import Beacon
 
 
 class ogn_ddb_response:
-    # DDB bla bla bla
-    text = '[{"id":400,"name":"DM Doppelsitzer- und Standardklasse 2017","Location":"Zwickau (EDBI)","description":"","firstDay":"2017-06-20T00:00:00","lastDay":"2017-07-01T00:00:00","optIsPublic":"True","fnLogo":"logo.png","numDaysClass":"6.00","short_name":"STD","numDays":"6"}]'
+    # OGN DDB http://ddb.glidernet.org/download/
+    text = "#DEVICE_TYPE,DEVICE_ID,AIRCRAFT_MODEL,REGISTRATION,CN,TRACKED,IDENTIFIED\n'F','000000','HPH 304CZ-17','OK-7777','KN','Y','Y'\n'O','000001','Paraglider','','','Y','Y'\n'F','000002','LS-6 18','OY-XRG','G2','Y','Y'\n'F','00000D','Ka-8','D-1749','W5','Y','Y'\n'F','0000FD','Taurus','F-JRDN','DN','Y','Y'\n'F','000114','','','','N','N'"
 
 
 class TestDB(unittest.TestCase):
@@ -56,6 +56,14 @@ class TestDB(unittest.TestCase):
         # Check if all 6014 are inserted
         db_beacons = db.session.query(Beacon).all()
         self.assertEqual(len(db_beacons), 6014)
+
+
+    @mock.patch('app.utils.requests')
+    def test_ddb_import(self, requests_mock):
+        requests_mock.get.side_effect = [ogn_ddb_response]
+
+        ddb_entries = ddb_import()
+        # irgendwas mit assertequal
 
 
 if __name__ == '__main__':
