@@ -7,6 +7,11 @@ from app.utils import process_beacon, logfile_to_beacons
 from app.model import Beacon
 
 
+class ogn_ddb_response:
+    # DDB bla bla bla
+    text = '[{"id":400,"name":"DM Doppelsitzer- und Standardklasse 2017","Location":"Zwickau (EDBI)","description":"","firstDay":"2017-06-20T00:00:00","lastDay":"2017-07-01T00:00:00","optIsPublic":"True","fnLogo":"logo.png","numDaysClass":"6.00","short_name":"STD","numDays":"6"}]'
+
+
 class TestDB(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')

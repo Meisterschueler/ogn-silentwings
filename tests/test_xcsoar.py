@@ -32,8 +32,8 @@ class TestDB(unittest.TestCase):
         task = db.session.query(Task).first()
         write_xcsoar_task(fp, task)
         xml = fp.getvalue()
-        
         print(xml)
+
 
 if __name__ == '__main__':
     unittest.main()
