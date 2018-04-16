@@ -104,3 +104,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+tester.py
+data-dev.sqlite
+data-test.sqlite
