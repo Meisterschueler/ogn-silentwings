@@ -30,9 +30,10 @@ class TestDB(unittest.TestCase):
         import io
         fp = io.BytesIO()
         task = db.session.query(Task).first()
+        print(task)
         write_xcsoar_task(fp, task)
         xml = fp.getvalue()
-        print(xml)
+        print(xml.decode('utf-8'))
 
 
 if __name__ == '__main__':

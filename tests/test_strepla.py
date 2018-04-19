@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from app import create_app, db
-from app.strepla import list_strepla_contests, get_strepla_contest, get_strepla_class_task
+from app.strepla import list_strepla_contests, get_strepla_contest_body, get_strepla_class_tasks
 
 from tests.helper import print_contest
 
@@ -88,17 +88,20 @@ class TestDB(unittest.TestCase):
     def test_get_strepla_contest(self, requests_mock):
         requests_mock.get.side_effect = [contest_detail_response, contest_class_response, contestants_std_response, contestants_dosi_response]
 
-        contest = get_strepla_contest(400)
+        contest = get_strepla_contest_body(400)
         print_contest(contest)
 
     @mock.patch('app.strepla.requests')
     def test_get_strepla_class_task(self, requests_mock):
         requests_mock.get.side_effect = [task_class_response1, task_class_response2, task_class_response3]
 
-        tasks = get_strepla_class_task(400, 'STD')
+        tasks = get_strepla_class_tasks(400, 'STD')
         print(tasks)
         for task in tasks:
             print(task)
+        
+        db.session.add_all(tasks)
+        db.session.commit()
 
 
 if __name__ == '__main__':

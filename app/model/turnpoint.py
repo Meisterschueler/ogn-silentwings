@@ -13,21 +13,21 @@ class Turnpoint(db.Model):
     elevation = Column(Integer)
     point_index = Column(Integer)   # number within task
     type = Column(String)           # start/point/finish
-    multiple_start = Column(Boolean)
-    distance = Column(Float)
-    course_in = Column(Float)
-    course_out = Column(Float)
-    oz_type = Column(String)        # next/symmetric/previous
-    oz_radius1 = Column(Integer)
-    oz_radius2 = Column(Integer)
-    oz_angle1 = Column(Float)
-    oz_angle12 = Column(Float)
-    oz_angle2 = Column(Float)
-    oz_line = Column(Boolean)
-    oz_max_altitude = Column(Integer)
-    oz_move = Column(Boolean)
-    oz_reduce = Column(Boolean)
-    speed_section_type = Column(String)
+    multiple_start = Column(Boolean) # Flag to allow multiple starts
+    distance = Column(Float)        # Distance to turnpoint
+    course_in = Column(Float)       # Course to turnpoint
+    course_out = Column(Float)      # Course to next turnpoint
+    oz_type = Column(String)        # next/symmetric/previous/fixed/start 
+    oz_radius1 = Column(Integer)    # First radius (must be greater than second radius) / 10km for DAEC Keyhole 
+    oz_radius2 = Column(Integer)    # Second radius / 0,5 for DAEC Keyhole
+    oz_angle1 = Column(Float)       # Angle of first radius / 45 for DAEC Keyhole
+    oz_angle12 = Column(Float)      # if oz_type = fixed then this value orients the observation zone - disregard otherwise
+    oz_angle2 = Column(Float)       # Angel of second radius / 180 for DAEC Keyhole
+    oz_line = Column(Boolean)       # True of observation zone is line
+    oz_max_altitude = Column(Integer)   # maximum Altitute of Turnpoint
+    oz_move = Column(Boolean)       # Moves origin of task leg intersection with observation zone to minimum - disregard - False
+    oz_reduce = Column(Boolean)     # Reduces leg distance - disregard
+    speed_section_type = Column(String) # Start/finish/point 
 
     # Relations
     task_id = Column(Integer, ForeignKey('tasks.id', ondelete='SET NULL'))

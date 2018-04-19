@@ -2,6 +2,7 @@ import requests
 import json
 from datetime import datetime
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
+from sqlalchemy.sql.expression import true
 
 
 def list_strepla_contests():
@@ -14,7 +15,7 @@ def list_strepla_contests():
     for contest_row in json_data:
         print("{id}: {name} - {Location}".format(**contest_row))
 
-def get_strepla_contest(competition_id):
+def get_strepla_contest_body(competition_id):
     from app.utils import ddb_import
     contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=360"
     # print(contest_url)
@@ -97,8 +98,9 @@ def get_strepla_contest(competition_id):
     return contest
 
 
-def get_strepla_class_task(competition_id, contest_class_name):
+def get_strepla_class_tasks(competition_id, contest_class_name):
     # This function reads the tasks from a specific contest and class
+    # TODO: Include example URL
     # TODO: Generate useful error message, if arguments are not provided
     all_task_url = "https://www.strepla.de/scs/ws/results.ashx?cmd=overviewDays&cID=" + str(competition_id) + "&cc=" + str(contest_class_name)
     r = requests.get(all_task_url)
@@ -124,7 +126,7 @@ def get_strepla_class_task(competition_id, contest_class_name):
             # print(task_data_item)
             parameters = {'result_status': all_task_data_item['state'],
                           'task_date': datetime.strptime(all_task_data_item['date'], "%Y-%m-%dT%H:%M:%S"),
-                          'task_distance': task_data_item['distance']}
+                          'task_distance': task_data_item['distance'].replace(' km','')}
 
             task = Task(**parameters)
 
@@ -133,7 +135,7 @@ def get_strepla_class_task(competition_id, contest_class_name):
                 # print("=== tps ===")
                 # print(tps)
                 if tps['scoring']['type'] == 'LINE':
-                    parameters = {'oz_line': tps['scoring']['width'],
+                    parameters = {'oz_line': True,
                                   'type': tps['scoring']['type']}
 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
@@ -173,6 +175,15 @@ def get_strepla_class_task(competition_id, contest_class_name):
             tasks.append(task)
 
     return tasks
+
+
+def get_strepla_contest_all(cID):
+    contest = get_strepla_contest_body(cID)
+    for contest_class in contest.classes:
+        tasks = get_strepla_class_tasks(cID, contest_class.type)
+        contest_class.tasks = tasks
+    
+    return contest
 
 
 # Get classes for a specific contest

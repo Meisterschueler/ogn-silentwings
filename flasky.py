@@ -86,7 +86,7 @@ def strepla_contests():
 @click.option('--cID',  help='ID of Contest')
 def import_strepla(cid):
     """Import a StrePla contest from scoring*StrePla"""
-    from app.strepla import get_strepla_contest
+    from app.strepla import get_strepla_contest_all
     if cid is None:
         print("You must specify the contest ID with option '--cID'")
         print("Following contests are known:")
@@ -94,8 +94,22 @@ def import_strepla(cid):
         list_strepla_contests()
         return
 
-    db.session.add_all(get_strepla_contest(cid))
+    db.session.add(get_strepla_contest_all(cid))
     db.session.commit()
+
+
+# TODO: Create function, which lists db internal contests and tasks
+@app.cli.command()
+def list_contests_tasks():
+    """"""
+    for contest in db.session.query(Contest):
+        print(contest)
+        for contest_class in contest.classes:
+            print(contest_class)
+            for task in contest_class.tasks:
+                print(task)
+    return
+
 
 
 @app.cli.command()

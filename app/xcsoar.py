@@ -19,6 +19,7 @@ def write_xcsoar_task(fp, task):
         'homogeneous_tps': 0, #task.homogeneous_tps,
         'is_closed': True, #task.is_closed,
     }
+    print(params)
 
     # Write <Task> tag
     with writer.write_task(**params):
@@ -26,6 +27,7 @@ def write_xcsoar_task(fp, task):
         # Iterate over turnpoints
         #for i, turnpoint in enumerate(task):
         for turnpoint in task.turnpoints:
+            print(task.turnpoints)
 
             # Write <Point> tag
             with writer.write_point(type=get_point_type(task, turnpoint.point_index)):
@@ -41,7 +43,17 @@ def write_xcsoar_task(fp, task):
                 )
 
                 # Write <ObservationZone> tag
-                params = get_observation_zone_params(turnpoint.sector)
+                #params = get_observation_zone_params(turnpoint.sector)
+                # writer.write_observation_zone(**params)
+                # writer.write_observation_zone(
+                # type=ObservationZoneType.CYLINDER,
+                # radius=30000,
+                #)
+
+                
+                # params = get_observation_zone_params(turnpoint.sector)
+                params = get_observation_zone_params(turnpoint)
+                print(params)
                 writer.write_observation_zone(**params)
 
 
@@ -75,39 +87,39 @@ def get_point_type(task, i):
         return 'Turn'
 
 
-def get_observation_zone_params(sector):
+def get_observation_zone_params(turnpoint):
     params = {}
 
-    if sector.type == 'startline' or sector.type == 'finishline':
+    if turnpoint.type == 'start' or turnpoint.type == 'finish':
         params["type"] = "Line"
-        params["length"] = sector.radius * 2 * 1000
+        params["length"] = turnpoint.oz_radius1 * 2 
 
-    elif sector.type == 'circle':
+    elif turnpoint.type == 'point':
         params["type"] = "Cylinder"
-        params["radius"] = sector.radius * 1000
+        params["radius"] = turnpoint.oz_radius1
 
-    elif sector.type == 'fai':
+    elif turnpoint.type == 'fai':
         params["type"] = "FAISector"
 
-    elif sector.type == 'daec':
+    elif turnpoint.type == 'daec':
         params["type"] = "Keyhole"
 
-    elif sector.type == 'bgastartsector':
+    elif turnpoint.type == 'bgastartsector':
         params["type"] = "BGAStartSector"
 
-    elif sector.type == 'bgafixedcourse':
+    elif turnpoint.type == 'bgafixedcourse':
         params["type"] = "BGAFixedCourse"
 
-    elif sector.type == 'bgaenhancedoption':
+    elif turnpoint.type == 'bgaenhancedoption':
         params["type"] = "BGAEnhancedOption"
 
-    elif sector.type == 'sector':
+    elif turnpoint.type == 'turnpoint':
         params["type"] = "Sector"
-        params["radius"] = sector.radius * 1000
-        params["start_radial"] = sector.start_radial
-        params["end_radial"] = sector.end_radial
+        params["radius"] = turnpoint.radius * 1000
+        params["start_radial"] = turnpoint.start_radial
+        params["end_radial"] = turnpoint.end_radial
 
-        if sector.inner_radius:
-            params["inner_radius"] = sector.inner_radius * 1000
+        if turnpoint.inner_radius:
+            params["inner_radius"] = turnpoint.inner_radius * 1000
 
     return params
