@@ -90,26 +90,31 @@ def get_point_type(task, i):
 def get_observation_zone_params(turnpoint):
     params = {}
 
-    if turnpoint.type == 'start' or turnpoint.type == 'finish':
+    if turnpoint.oz_line == True:
+        print("Recognized Line")
         params["type"] = "Line"
         params["length"] = turnpoint.oz_radius1 * 2 
 
-    elif turnpoint.type == 'point':
+    elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 180:
         params["type"] = "Cylinder"
         params["radius"] = turnpoint.oz_radius1
 
+    # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
         params["type"] = "FAISector"
 
-    elif turnpoint.type == 'daec':
+    elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180 and turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500:
         params["type"] = "Keyhole"
 
+    # TODO: Implement BGAStartSector
     elif turnpoint.type == 'bgastartsector':
         params["type"] = "BGAStartSector"
 
+    # TODO: Implement BGA Fixed Course
     elif turnpoint.type == 'bgafixedcourse':
         params["type"] = "BGAFixedCourse"
 
+    # TODO: Implement BGA Enhanced option
     elif turnpoint.type == 'bgaenhancedoption':
         params["type"] = "BGAEnhancedOption"
 

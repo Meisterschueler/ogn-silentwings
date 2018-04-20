@@ -98,10 +98,9 @@ def import_strepla(cid):
     db.session.commit()
 
 
-# TODO: Create function, which lists db internal contests and tasks
 @app.cli.command()
 def list_contests_tasks():
-    """"""
+    """Lists all contests and tasks from DB"""
     for contest in db.session.query(Contest):
         print(contest)
         for contest_class in contest.classes:
@@ -127,6 +126,30 @@ def glidertracker_filter(contest):
     print("Generating a filter list for glidertracker.org")
     glidertracker_filter(contest)
 
+
+@app.cli.command()
+@click.option('--tID', help='ID of Task from DB')
+def glidertracker_task(tid):
+    """Writes a task in glidertracker format"""
+    from app.xcsoar import write_xcsoar_task
+    import io
+    if tid is None:
+        print("You must specify the contest ID with option '--cID'")
+        print("Following contests are known:")
+        # Output list of known contests
+        for contest in db.session.query(Contest):
+            print(contest)
+            for contest_class in contest.classes:
+                print(contest_class)
+                for task in contest_class.tasks:
+                    print(task)
+    
+    fp = io.BytesIO()
+    write_xcsoar_task(fp, tid)
+    xml = fp.getvalue()
+    print(xml.decode('utf-8'))
+    print(tid)
+    
 
 #########################
 # Following Sections provides the Silent Wings Viewer interface

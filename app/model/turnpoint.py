@@ -18,9 +18,9 @@ class Turnpoint(db.Model):
     course_in = Column(Float)       # Course to turnpoint
     course_out = Column(Float)      # Course to next turnpoint
     oz_type = Column(String)        # next/symmetric/previous/fixed/start 
-    oz_radius1 = Column(Integer)    # First radius (must be greater than second radius) / 10km for DAEC Keyhole 
-    oz_radius2 = Column(Integer)    # Second radius / 0,5 for DAEC Keyhole
-    oz_angle1 = Column(Float)       # Angle of first radius / 45 for DAEC Keyhole
+    oz_radius1 = Column(Integer)    # First radius (must be greater than second radius) / 10km for DAEC Keyhole / unit is meters
+    oz_radius2 = Column(Integer)    # Second radius / 0,5 for DAEC Keyhole / unit is meters
+    oz_angle1 = Column(Float)       # Angle of first radius / 45 for DAEC Keyhole / unit is degrees
     oz_angle12 = Column(Float)      # if oz_type = fixed then this value orients the observation zone - disregard otherwise
     oz_angle2 = Column(Float)       # Angel of second radius / 180 for DAEC Keyhole
     oz_line = Column(Boolean)       # True of observation zone is line

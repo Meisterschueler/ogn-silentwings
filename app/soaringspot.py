@@ -1,6 +1,6 @@
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
 
-import requests
+import requests, math
 from datetime import datetime
 
 
@@ -145,9 +145,9 @@ def get_soaringspot_contests(url, client_id, secret):
                                                   'oz_type': point_row['oz_type'],
                                                   'oz_radius1': point_row['oz_radius1'],
                                                   'oz_radius2': point_row['oz_radius2'],
-                                                  'oz_angle1': point_row['oz_angle1'],
-                                                  'oz_angle12': point_row['oz_angle12'],
-                                                  'oz_angle2': point_row['oz_angle2'],
+                                                  'oz_angle1': math.degrees(point_row['oz_angle1']),
+                                                  'oz_angle12': math.degrees(point_row['oz_angle12']),
+                                                  'oz_angle2': math.degrees(point_row['oz_angle2']),
                                                   'oz_line': point_row['oz_line'],
                                                   'oz_max_altitude': point_row['oz_max_altitude'],
                                                   'oz_move': point_row['oz_move'],
