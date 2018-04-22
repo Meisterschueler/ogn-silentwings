@@ -93,11 +93,12 @@ def get_observation_zone_params(turnpoint):
     if turnpoint.oz_line == True:
         print("Recognized Line")
         params["type"] = "Line"
-        params["length"] = turnpoint.oz_radius1 * 2 
+        print(turnpoint.oz_radius1)
+        params["length"] = int(turnpoint.oz_radius1) * 2 
 
     elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 180:
         params["type"] = "Cylinder"
-        params["radius"] = turnpoint.oz_radius1
+        params["radius"] = int(turnpoint.oz_radius1)
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':

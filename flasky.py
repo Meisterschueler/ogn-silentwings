@@ -143,9 +143,15 @@ def glidertracker_task(tid):
                 print(contest_class)
                 for task in contest_class.tasks:
                     print(task)
+        
+        return
     
+    tasks = db.session.query(Task)
+    for task in tasks:
+        print(task)
+        
     fp = io.BytesIO()
-    write_xcsoar_task(fp, tid)
+    write_xcsoar_task(fp, tasks[int(tid)])
     xml = fp.getvalue()
     print(xml.decode('utf-8'))
     print(tid)
