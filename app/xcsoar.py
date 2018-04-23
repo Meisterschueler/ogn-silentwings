@@ -32,6 +32,7 @@ def write_xcsoar_task(fp, task):
             # Write <Point> tag
             with writer.write_point(type=get_point_type(task, turnpoint.point_index)):
 
+                print(turnpoint)
                 # Write <Waypoint> tag
                 writer.write_waypoint(
                     name=turnpoint.name,
@@ -41,7 +42,7 @@ def write_xcsoar_task(fp, task):
                     comment="", #turnpoint.comment,
                     altitude=turnpoint.elevation,
                 )
-
+                
                 # Write <ObservationZone> tag
                 #params = get_observation_zone_params(turnpoint.sector)
                 # writer.write_observation_zone(**params)
@@ -53,7 +54,10 @@ def write_xcsoar_task(fp, task):
                 
                 # params = get_observation_zone_params(turnpoint.sector)
                 params = get_observation_zone_params(turnpoint)
+                
                 print(params)
+                print("pass")
+                
                 writer.write_observation_zone(**params)
 
 
@@ -78,48 +82,64 @@ def get_task_type(task):
 
 def get_point_type(task, i):
     if i == 0:
+        print("get_point_type: Start")
         return 'Start'
     elif i == len(task.turnpoints) - 1:
+        print("get_point_type: Finish")
         return 'Finish'
     elif task.task_type == 'aat':
+        print("get_point_type: Area")
         return 'Area'
     else:
+        print("get_point_type: Turn")
         return 'Turn'
 
 
 def get_observation_zone_params(turnpoint):
     params = {}
 
-    if turnpoint.oz_line == True:
-        print("Recognized Line")
+    if turnpoint.type == 'finish':
+        print("Recognized Finish")
         params["type"] = "Line"
         print(turnpoint.oz_radius1)
         params["length"] = int(turnpoint.oz_radius1) * 2 
 
-    elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 180:
+    elif turnpoint.type == 'start':
+        print("Recognized Start")
+        params["type"] = "Cylinder"
+        params["radius"] = int(turnpoint.oz_radius1)
+
+    elif turnpoint.type == 'point':
+        print("Recognized Point")
         params["type"] = "Cylinder"
         params["radius"] = int(turnpoint.oz_radius1)
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
+        print("Recognized FAISector")
         params["type"] = "FAISector"
 
     elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180 and turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500:
+        print("Recognized Keyhole")
         params["type"] = "Keyhole"
 
     # TODO: Implement BGAStartSector
     elif turnpoint.type == 'bgastartsector':
+        print("BGAStartSector")
         params["type"] = "BGAStartSector"
 
     # TODO: Implement BGA Fixed Course
     elif turnpoint.type == 'bgafixedcourse':
+        print("BGAFixedCourse")
         params["type"] = "BGAFixedCourse"
 
     # TODO: Implement BGA Enhanced option
     elif turnpoint.type == 'bgaenhancedoption':
+        print("BGAEnhancedOption")
         params["type"] = "BGAEnhancedOption"
 
     elif turnpoint.type == 'turnpoint':
+        print("turnpoint")
         params["type"] = "Sector"
         params["radius"] = turnpoint.radius * 1000
         params["start_radial"] = turnpoint.start_radial
@@ -127,5 +147,9 @@ def get_observation_zone_params(turnpoint):
 
         if turnpoint.inner_radius:
             params["inner_radius"] = turnpoint.inner_radius * 1000
+    elif 1 == 1:
+        print("Nothing recognized. Abort.")
+        
+    
 
     return params

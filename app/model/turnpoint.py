@@ -5,6 +5,7 @@ from app import db
 
 class Turnpoint(db.Model):
     __tablename__ = "turnpoints"
+    # <Turnpoint 1: Aarberg Bf,0.82107561826706,0.12703087925911,449,3,finish,False,161607.8125,5.3836393356323,0.0,previous,5000,0,180.0000000000004,128.45981235234487,0.0,False,0,False,False,finish>
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
