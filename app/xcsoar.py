@@ -20,7 +20,7 @@ def write_xcsoar_task(fp, task):
         'is_closed': True, #task.is_closed,
     }
     print(params)
-
+   
     # Write <Task> tag
     with writer.write_task(**params):
 

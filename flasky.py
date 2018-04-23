@@ -146,7 +146,12 @@ def glidertracker_task(tid):
         
         return
     
+    tid = int(tid) - 1
     tasks = db.session.query(Task)
+    if int(tid) > (len(tasks.all()) - 1):
+        print("The task ID you provided is too high. Aborting.")
+        return
+    
     for task in tasks:
         print(task)
         
