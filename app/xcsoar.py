@@ -2,6 +2,7 @@ from aerofiles.xcsoar import Writer
 
 
 def write_xcsoar_task(fp, task):
+    import math
     writer = Writer(fp)
 
     params = {
@@ -36,9 +37,9 @@ def write_xcsoar_task(fp, task):
                 # Write <Waypoint> tag
                 writer.write_waypoint(
                     name=turnpoint.name,
-                    latitude=turnpoint.latitude,
-                    longitude=turnpoint.longitude,
-                    id=turnpoint.id,
+                    latitude=math.degrees(turnpoint.latitude),
+                    longitude=math.degrees(turnpoint.longitude),
+                    id=turnpoint.point_index,
                     comment="", #turnpoint.comment,
                     altitude=turnpoint.elevation,
                 )
@@ -99,15 +100,24 @@ def get_observation_zone_params(turnpoint):
     params = {}
 
     if turnpoint.type == 'finish':
-        print("Recognized Finish")
-        params["type"] = "Line"
-        print(turnpoint.oz_radius1)
-        params["length"] = int(turnpoint.oz_radius1) * 2 
+        if turnpoint.oz_line == True:
+            print("Recognized Finish Line")
+            params["type"] = "Line"
+            params["radius"] = int(turnpoint.oz_radius1) * 2
+        else:
+            print("Recognized Finish Cylinder")
+            params["type"] = "Cylinder"
+            params["radius"] = int(turnpoint.oz_radius1) * 2
 
     elif turnpoint.type == 'start':
-        print("Recognized Start")
-        params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1)
+        if turnpoint.oz_line == True:
+            print("Recognized Start Line")
+            params["type"] = "Line"
+            params["length"] = int(turnpoint.oz_radius1) * 2 
+        else:
+            print("Recognized Start Cylinder")
+            params["type"] = "Cylinder"
+            params["radius"] = int(turnpoint.oz_radius1) * 2 
 
     elif turnpoint.type == 'point':
         print("Recognized Point")
@@ -147,8 +157,9 @@ def get_observation_zone_params(turnpoint):
 
         if turnpoint.inner_radius:
             params["inner_radius"] = turnpoint.inner_radius * 1000
-    elif 1 == 1:
+    else:
         print("Nothing recognized. Abort.")
+        raise ValueError("Turnpoint.type '{}' not recognized".format(turnpoint.type))
         
     
 

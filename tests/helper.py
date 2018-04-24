@@ -82,11 +82,12 @@ def create_simple_contest():
     pilot_18m_1.last_name = "Gaukelei"
     pilot_18m_1.contestant = contestant_18m_1
 
+    # TODO: Move this into seperate function to create task: create_task
     task_1 = Task()
     task_1.no_start = datetime(2015, 9, 3, 10, 0, 0)
     task_1.task_type = "High speed"
     task_1.task_date = date(2005, 9, 3)
-    task_1.contest_class = open_class
+    task_1.contest_class = open_class   # This does not go in new function.
 
     turnpoint_11 = Turnpoint()
     turnpoint_11.name = "Burgfeuerstein"

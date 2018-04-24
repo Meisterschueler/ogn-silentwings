@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from app import db
 
 
@@ -32,7 +32,7 @@ class Turnpoint(db.Model):
 
     # Relations
     task_id = Column(Integer, ForeignKey('tasks.id', ondelete='SET NULL'))
-    task = relationship('Task', foreign_keys=[task_id], backref='turnpoints')
+    task = relationship('Task', foreign_keys=[task_id], backref=backref('turnpoints', order_by='Turnpoint.point_index.asc()'))
 
     def __repr__(self):
         return "<Turnpoint %s: %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s>" % (
