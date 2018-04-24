@@ -134,7 +134,7 @@ def glidertracker_task(tid):
     from app.xcsoar import write_xcsoar_task
     import io
     if tid is None:
-        print("You must specify the contest ID with option '--cID'")
+        print("You must specify the contest ID with option '--tID'")
         print("Following contests are known:")
         # Output list of known contests
         for contest in db.session.query(Contest):
@@ -152,14 +152,11 @@ def glidertracker_task(tid):
         print("The task ID you provided is too high. Aborting.")
         return
     
-    for task in tasks:
-        print(task)
-        
     fp = io.BytesIO()
     write_xcsoar_task(fp, tasks[int(tid)])
     xml = fp.getvalue()
     print(xml.decode('utf-8'))
-    print(tid)
+    
     
 
 #########################

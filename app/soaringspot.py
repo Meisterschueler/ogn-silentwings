@@ -45,6 +45,7 @@ def get_soaringspot_document(url, client_id, secret):
 
 
 def get_soaringspot_contests(url, client_id, secret):
+    import math
     document = get_soaringspot_document(url, client_id, secret)
     print(document)
     contests = list()
@@ -63,8 +64,8 @@ def get_soaringspot_contests(url, client_id, secret):
                 location_row = contest_row['location']
                 parameters = {'altitude': location_row['altitude'],
                               'country': location_row['country'],
-                              'latitude': location_row['latitude'],
-                              'longitude': location_row['longitude'],
+                              'latitude': math.degrees(location_row['latitude']),
+                              'longitude': math.degrees(location_row['longitude']),
                               'name': location_row['name'],
                               'time_zone': location_row['time_zone']}
                 location = Location(**parameters)
@@ -133,8 +134,8 @@ def get_soaringspot_contests(url, client_id, secret):
                             else:
                                 for point_row in points_doc['points']:
                                     parameters = {'name': point_row['name'],
-                                                  'latitude': point_row['latitude'],
-                                                  'longitude': point_row['longitude'],
+                                                  'latitude': math.degrees(point_row['latitude']),
+                                                  'longitude': math.degrees(point_row['longitude']),
                                                   'elevation': point_row['elevation'],
                                                   'point_index': point_row['point_index'],
                                                   'type': point_row['type'],

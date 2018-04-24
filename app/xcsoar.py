@@ -28,7 +28,7 @@ def write_xcsoar_task(fp, task):
         # Iterate over turnpoints
         #for i, turnpoint in enumerate(task):
         for turnpoint in task.turnpoints:
-            print(task.turnpoints)
+            # print(task.turnpoints)
 
             # Write <Point> tag
             with writer.write_point(type=get_point_type(task, turnpoint.point_index)):
@@ -37,8 +37,8 @@ def write_xcsoar_task(fp, task):
                 # Write <Waypoint> tag
                 writer.write_waypoint(
                     name=turnpoint.name,
-                    latitude=math.degrees(turnpoint.latitude),
-                    longitude=math.degrees(turnpoint.longitude),
+                    latitude=turnpoint.latitude,
+                    longitude=turnpoint.longitude,
                     id=turnpoint.point_index,
                     comment="", #turnpoint.comment,
                     altitude=turnpoint.elevation,
@@ -55,10 +55,6 @@ def write_xcsoar_task(fp, task):
                 
                 # params = get_observation_zone_params(turnpoint.sector)
                 params = get_observation_zone_params(turnpoint)
-                
-                print(params)
-                print("pass")
-                
                 writer.write_observation_zone(**params)
 
 
@@ -121,17 +117,18 @@ def get_observation_zone_params(turnpoint):
 
     elif turnpoint.type == 'point':
         print("Recognized Point")
-        params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1)
+        if turnpoint.oz_radius2 == 0:
+            print("No radius2")
+            params["type"] = "Cylinder"
+            params["radius"] = int(turnpoint.oz_radius1)
+        elif turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500 and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180:
+            print("DAEC KEYHOLE")
+            params["type"] = "Keyhole"
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
         print("Recognized FAISector")
         params["type"] = "FAISector"
-
-    elif turnpoint.type == 'point' and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180 and turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500:
-        print("Recognized Keyhole")
-        params["type"] = "Keyhole"
 
     # TODO: Implement BGAStartSector
     elif turnpoint.type == 'bgastartsector':
