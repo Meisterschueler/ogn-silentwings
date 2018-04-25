@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import datetime
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
-from sqlalchemy.sql.expression import true
+# from sqlalchemy.sql.expression import true
 
 
 def list_strepla_contests():
@@ -15,6 +15,7 @@ def list_strepla_contests():
     for contest_row in json_data:
         print("{id}: {name} - {Location}".format(**contest_row))
 
+
 def get_strepla_contest_body(competition_id):
     from app.utils import ddb_import
     contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=700"
@@ -24,9 +25,9 @@ def get_strepla_contest_body(competition_id):
     if (len(r.text)) == 2:
         raise ValueError("This contest does not exist: '{}' Aborting.".format(competition_id))
         return
-    
+
     contest_data = json.loads(r.text.encode('utf-8'))[0]
-    
+
     # Process contest location and date info
     parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
                   'name': contest_data['name'],
@@ -42,7 +43,7 @@ def get_strepla_contest_body(competition_id):
     # print(contest_class_url)
     r = requests.get(contest_class_url)
     contest_class_data = json.loads(r.text.encode('utf-8'))
-    
+
     ddb_entries = ddb_import()
 
     for contest_class_row in contest_class_data:
@@ -68,7 +69,7 @@ def get_strepla_contest_body(competition_id):
                           'live_track_id': contestant_row['flarm_ID']}
             contestant = Contestant(**parameters)
             contestant.contest_class = contest_class
-            
+
             # Do some checks of the live_track_id
             if parameters['live_track_id']:
                 print("Live_track_id defined via StrePla API")
@@ -126,7 +127,7 @@ def get_strepla_class_tasks(competition_id, contest_class_name):
             # print(task_data_item)
             parameters = {'result_status': all_task_data_item['state'],
                           'task_date': datetime.strptime(all_task_data_item['date'], "%Y-%m-%dT%H:%M:%S"),
-                          'task_distance': task_data_item['distance'].replace(' km','')}
+                          'task_distance': task_data_item['distance'].replace(' km', '')}
 
             task = Task(**parameters)
 
@@ -137,7 +138,7 @@ def get_strepla_class_tasks(competition_id, contest_class_name):
                 if tps['scoring']['type'] == 'LINE':
                     parameters = {'oz_line': True,
                                   'type': tps['scoring']['type'],
-                                  'oz_radius1':tps['scoring']['width']/2}
+                                  'oz_radius1': tps['scoring']['width'] / 2}
 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
                     parameters = {'type': tps['scoring']['type'],
@@ -183,7 +184,7 @@ def get_strepla_contest_all(cID):
     for contest_class in contest.classes:
         tasks = get_strepla_class_tasks(cID, contest_class.type)
         contest_class.tasks = tasks
-    
+
     return contest
 
 

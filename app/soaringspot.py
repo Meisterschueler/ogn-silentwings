@@ -1,6 +1,6 @@
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
 
-import requests, math
+import requests
 from datetime import datetime
 
 

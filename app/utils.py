@@ -14,8 +14,9 @@ def ddb_import():
     ddb_entries = dict()
     for row in data:
         ddb_entries[row[1]] = row[3]
-        
+
     return ddb_entries
+
 
 def process_beacon(raw_message, reference_date=None):
     from ogn.parser import parse, ParseError

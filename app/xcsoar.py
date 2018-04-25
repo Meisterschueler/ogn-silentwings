@@ -2,31 +2,30 @@ from aerofiles.xcsoar import Writer
 
 
 def write_xcsoar_task(fp, task):
-    import math
     writer = Writer(fp)
 
     params = {
         'type': get_task_type(task),
-        'task_scored': 0, #task.task_scored,
-        'aat_min_time': 0, #task.aat_min_time,
-        'start_max_speed': 0, #task.start_max_speed,
-        'start_max_height': 0, #task.start_max_height,
-        'start_max_height_ref': 0, #task.start_max_height_ref,
-        'finish_min_height': 0, #task.finish_min_height,
-        'finish_min_height_ref': 0, #task.finish_min_height_ref,
-        'fai_finish': True, #task.fai_finish,
-        'min_points': 0, #task.min_points,
-        'max_points': 0, #task.max_points,
-        'homogeneous_tps': 0, #task.homogeneous_tps,
-        'is_closed': True, #task.is_closed,
+        'task_scored': 0,  # task.task_scored,
+        'aat_min_time': 0,  # task.aat_min_time,
+        'start_max_speed': 0,  # task.start_max_speed,
+        'start_max_height': 0,  # task.start_max_height,
+        'start_max_height_ref': 0,  # task.start_max_height_ref,
+        'finish_min_height': 0,  # task.finish_min_height,
+        'finish_min_height_ref': 0,  # task.finish_min_height_ref,
+        'fai_finish': True,  # task.fai_finish,
+        'min_points': 0,  # task.min_points,
+        'max_points': 0,  # task.max_points,
+        'homogeneous_tps': 0,  # task.homogeneous_tps,
+        'is_closed': True,  # task.is_closed,
     }
     print(params)
-   
+
     # Write <Task> tag
     with writer.write_task(**params):
 
-        # Iterate over turnpoints
-        #for i, turnpoint in enumerate(task):
+        #  Iterate over turnpoints
+        #  for i, turnpoint in enumerate(task):
         for turnpoint in task.turnpoints:
             # print(task.turnpoints)
 
@@ -40,20 +39,10 @@ def write_xcsoar_task(fp, task):
                     latitude=turnpoint.latitude,
                     longitude=turnpoint.longitude,
                     id=turnpoint.point_index,
-                    comment="", #turnpoint.comment,
+                    comment="",  # turnpoint.comment,
                     altitude=turnpoint.elevation,
                 )
-                
-                # Write <ObservationZone> tag
-                #params = get_observation_zone_params(turnpoint.sector)
-                # writer.write_observation_zone(**params)
-                # writer.write_observation_zone(
-                # type=ObservationZoneType.CYLINDER,
-                # radius=30000,
-                #)
 
-                
-                # params = get_observation_zone_params(turnpoint.sector)
                 params = get_observation_zone_params(turnpoint)
                 writer.write_observation_zone(**params)
 
@@ -96,7 +85,7 @@ def get_observation_zone_params(turnpoint):
     params = {}
 
     if turnpoint.type == 'finish':
-        if turnpoint.oz_line == True:
+        if turnpoint.oz_line is True:
             print("Recognized Finish Line")
             params["type"] = "Line"
             params["radius"] = int(turnpoint.oz_radius1) * 2
@@ -106,14 +95,14 @@ def get_observation_zone_params(turnpoint):
             params["radius"] = int(turnpoint.oz_radius1) * 2
 
     elif turnpoint.type == 'start':
-        if turnpoint.oz_line == True:
+        if turnpoint.oz_line is True:
             print("Recognized Start Line")
             params["type"] = "Line"
-            params["length"] = int(turnpoint.oz_radius1) * 2 
+            params["length"] = int(turnpoint.oz_radius1) * 2
         else:
             print("Recognized Start Cylinder")
             params["type"] = "Cylinder"
-            params["radius"] = int(turnpoint.oz_radius1) * 2 
+            params["radius"] = int(turnpoint.oz_radius1) * 2
 
     elif turnpoint.type == 'point':
         print("Recognized Point")
@@ -124,18 +113,18 @@ def get_observation_zone_params(turnpoint):
         elif turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500 and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180:
             print("DAEC KEYHOLE")
             params["type"] = "Keyhole"
-    
+
     # StrePla Start Line
     elif turnpoint.type == 'LINE' and turnpoint.point_index == 0:
         print("Recognized Start Line")
         params["type"] = "Line"
-        params["length"] = int(turnpoint.oz_radius1) * 2 
-        
+        params["length"] = int(turnpoint.oz_radius1) * 2
+
     # StrePla AAT Sector
     elif turnpoint.type == 'AAT SECTOR':
         print("Recognized AAT Sector")
         params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1) 
+        params["radius"] = int(turnpoint.oz_radius1)
 
     # StrePla Keyhole
     elif turnpoint.type == 'KEYHOLE':
@@ -146,7 +135,7 @@ def get_observation_zone_params(turnpoint):
     elif turnpoint.type == 'CYLINDER':
         print("Recognized CYLINDER")
         params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1) 
+        params["radius"] = int(turnpoint.oz_radius1)
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
@@ -180,7 +169,5 @@ def get_observation_zone_params(turnpoint):
     else:
         print("Nothing recognized. Abort.")
         raise ValueError("Turnpoint.type '{}' not recognized".format(turnpoint.type))
-        
-    
 
     return params
