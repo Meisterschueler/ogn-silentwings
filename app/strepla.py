@@ -136,7 +136,8 @@ def get_strepla_class_tasks(competition_id, contest_class_name):
                 # print(tps)
                 if tps['scoring']['type'] == 'LINE':
                     parameters = {'oz_line': True,
-                                  'type': tps['scoring']['type']}
+                                  'type': tps['scoring']['type'],
+                                  'oz_radius1':tps['scoring']['width']/2}
 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
                     parameters = {'type': tps['scoring']['type'],
