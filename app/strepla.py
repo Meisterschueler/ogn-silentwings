@@ -17,12 +17,12 @@ def list_strepla_contests():
 
 def get_strepla_contest_body(competition_id):
     from app.utils import ddb_import
-    contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=360"
+    contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=700"
     # print(contest_url)
     r = requests.get(contest_url)
     # Test if contest is present
     if (len(r.text)) == 2:
-        print("This contest does not exist. Error. Aborting ....")
+        raise ValueError("This contest does not exist: '{}' Aborting.".format(competition_id))
         return
     
     contest_data = json.loads(r.text.encode('utf-8'))[0]

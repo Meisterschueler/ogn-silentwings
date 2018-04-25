@@ -137,7 +137,16 @@ def get_observation_zone_params(turnpoint):
         params["type"] = "Cylinder"
         params["radius"] = int(turnpoint.oz_radius1) 
 
- 
+    # StrePla Keyhole
+    elif turnpoint.type == 'KEYHOLE':
+        print("Recognized DAEC Keyhole")
+        params["type"] = "Keyhole"
+
+    # StrePla CYLINDER
+    elif turnpoint.type == 'CYLINDER':
+        print("Recognized CYLINDER")
+        params["type"] = "Cylinder"
+        params["radius"] = int(turnpoint.oz_radius1) 
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
