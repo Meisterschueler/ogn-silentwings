@@ -113,6 +113,8 @@ def get_observation_zone_params(turnpoint):
         elif turnpoint.oz_radius1 == 10000 and turnpoint.oz_radius2 == 500 and int(turnpoint.oz_angle1) == 45 and int(turnpoint.oz_angle2) == 180:
             print("DAEC KEYHOLE")
             params["type"] = "Keyhole"
+        else:
+            raise ValueError("Turnpoint.type '{}' not recognized".format(turnpoint.type))
 
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
