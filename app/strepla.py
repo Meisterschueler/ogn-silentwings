@@ -167,9 +167,9 @@ def get_strepla_class_tasks(competition_id, contest_class_name):
                 elif tps['scoring']['type'] == 'CYLINDER':
                     parameters = {'type': 'point',
                                   'oz_radius1': tps['scoring']['radius'],
-                                  'oz_radius2': 0, 
+                                  'oz_radius2': 0,
                                   'oz_angle1': 180,
-                                  'oz_angle2': 0, 
+                                  'oz_angle2': 0,
                                   'oz_type': 'symmetric',
                                   'oz_line': False,
                                   'oz_move': False,
