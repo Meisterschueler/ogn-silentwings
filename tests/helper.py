@@ -85,7 +85,7 @@ def create_simple_contest():
     # TODO: Move this into seperate function to create task: create_task
     task_1 = Task()
     task_1.no_start = datetime(2015, 9, 3, 10, 0, 0)
-    task_1.task_type = "High speed" # Should be aat, rt, ...
+    task_1.task_type = "High speed"  # Should be aat, rt, ...
     task_1.task_date = date(2005, 9, 3)
     task_1.contest_class = open_class   # This does not go in new function.
 
@@ -102,7 +102,7 @@ def create_simple_contest():
     turnpoint_12.oz_radius1 = 3000
     turnpoint_12.oz_radius2 = 0
     turnpoint_12.oz_angle1 = 180
-    turnpoint_12.oz_angle2 = 0 
+    turnpoint_12.oz_angle2 = 0
     turnpoint_12.oz_type = 'symmetric'
     turnpoint_12.oz_line = False
     turnpoint_12.oz_move = False
@@ -116,7 +116,7 @@ def create_simple_contest():
     turnpoint_13.oz_radius1 = 10000
     turnpoint_13.oz_radius2 = 500
     turnpoint_13.oz_angle1 = 45
-    turnpoint_13.oz_angle2 = 180 
+    turnpoint_13.oz_angle2 = 180
     turnpoint_13.oz_type = 'symmetric'
     turnpoint_13.oz_line = False
     turnpoint_13.oz_move = False

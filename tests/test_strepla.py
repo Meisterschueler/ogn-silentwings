@@ -99,7 +99,7 @@ class TestDB(unittest.TestCase):
         print(tasks)
         for task in tasks:
             print(task)
-        
+
         db.session.add_all(tasks)
         db.session.commit()
 
