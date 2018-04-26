@@ -5,20 +5,21 @@ from app import db
 
 class Task(db.Model):
     __tablename__ = "tasks"
+    # example: <Task 1: 2018-04-19 00:00:01,preliminary,False,2018-04-19,1737118.5,0.0,0.0,2,2,unknown_triangle,-1>
 
     id = Column(Integer, primary_key=True)
     images = None   # Column(Integer)
-    no_start = Column(DateTime)
-    result_status = Column(String)
-    start_on_entry = Column(Boolean)
-    task_date = Column(Date)
-    task_distance = Column(Float)
-    task_distance_max = Column(Float)
-    task_distance_min = Column(Float)
-    task_duration = Column(String)
+    no_start = Column(DateTime)     # e.g. 2018-04-19 00:00:01
+    result_status = Column(String)  # e.g. preliminary
+    start_on_entry = Column(Boolean)    # e.g. false
+    task_date = Column(Date)        # e.g. 2018-04-19
+    task_distance = Column(Float)   # provided in meters e.g. 1737118.5
+    task_distance_max = Column(Float)   # is zero if racing task? TBC.
+    task_distance_min = Column(Float)   # is zero if racing task? TBC.
+    task_duration = Column(Integer)  # in seconds
     task_number = Column(Integer)
-    task_type = Column(String)
-    task_value = Column(Integer)
+    task_type = Column(String)      # e.g. unknown_triangle
+    task_value = Column(Integer)    # e.g. -1 meaning unclear
 
     # Relations
     contest_class_id = Column(Integer, ForeignKey('contest_classes.id', ondelete='SET NULL'))

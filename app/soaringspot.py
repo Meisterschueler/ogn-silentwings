@@ -45,6 +45,7 @@ def get_soaringspot_document(url, client_id, secret):
 
 
 def get_soaringspot_contests(url, client_id, secret):
+    import math
     document = get_soaringspot_document(url, client_id, secret)
     print(document)
     contests = list()
@@ -63,8 +64,8 @@ def get_soaringspot_contests(url, client_id, secret):
                 location_row = contest_row['location']
                 parameters = {'altitude': location_row['altitude'],
                               'country': location_row['country'],
-                              'latitude': location_row['latitude'],
-                              'longitude': location_row['longitude'],
+                              'latitude': math.degrees(location_row['latitude']),
+                              'longitude': math.degrees(location_row['longitude']),
                               'name': location_row['name'],
                               'time_zone': location_row['time_zone']}
                 location = Location(**parameters)
@@ -133,8 +134,8 @@ def get_soaringspot_contests(url, client_id, secret):
                             else:
                                 for point_row in points_doc['points']:
                                     parameters = {'name': point_row['name'],
-                                                  'latitude': point_row['latitude'],
-                                                  'longitude': point_row['longitude'],
+                                                  'latitude': math.degrees(point_row['latitude']),
+                                                  'longitude': math.degrees(point_row['longitude']),
                                                   'elevation': point_row['elevation'],
                                                   'point_index': point_row['point_index'],
                                                   'type': point_row['type'],
@@ -145,9 +146,9 @@ def get_soaringspot_contests(url, client_id, secret):
                                                   'oz_type': point_row['oz_type'],
                                                   'oz_radius1': point_row['oz_radius1'],
                                                   'oz_radius2': point_row['oz_radius2'],
-                                                  'oz_angle1': point_row['oz_angle1'],
-                                                  'oz_angle12': point_row['oz_angle12'],
-                                                  'oz_angle2': point_row['oz_angle2'],
+                                                  'oz_angle1': math.degrees(point_row['oz_angle1']),
+                                                  'oz_angle12': math.degrees(point_row['oz_angle12']),
+                                                  'oz_angle2': math.degrees(point_row['oz_angle2']),
                                                   'oz_line': point_row['oz_line'],
                                                   'oz_max_altitude': point_row['oz_max_altitude'],
                                                   'oz_move': point_row['oz_move'],

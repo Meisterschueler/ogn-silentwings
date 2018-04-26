@@ -86,7 +86,7 @@ def strepla_contests():
 @click.option('--cID',  help='ID of Contest')
 def import_strepla(cid):
     """Import a StrePla contest from scoring*StrePla"""
-    from app.strepla import get_strepla_contest
+    from app.strepla import get_strepla_contest_all
     if cid is None:
         print("You must specify the contest ID with option '--cID'")
         print("Following contests are known:")
@@ -94,8 +94,21 @@ def import_strepla(cid):
         list_strepla_contests()
         return
 
-    db.session.add_all(get_strepla_contest(cid))
+    db.session.add(get_strepla_contest_all(cid))
     db.session.commit()
+
+
+@app.cli.command()
+def list_contests_tasks():
+    """Lists all contests and tasks from DB"""
+    for contest in db.session.query(Contest):
+        print(contest)
+        for contest_class in contest.classes:
+            print(contest_class)
+            for task in contest_class.tasks:
+                print(task)
+    return
+
 
 
 @app.cli.command()
@@ -113,6 +126,38 @@ def glidertracker_filter(contest):
     print("Generating a filter list for glidertracker.org")
     glidertracker_filter(contest)
 
+
+@app.cli.command()
+@click.option('--tID', help='ID of Task from DB')
+def glidertracker_task(tid):
+    """Writes a task in glidertracker format"""
+    from app.xcsoar import write_xcsoar_task
+    import io
+    if tid is None:
+        print("You must specify the contest ID with option '--tID'")
+        print("Following contests are known:")
+        # Output list of known contests
+        for contest in db.session.query(Contest):
+            print(contest)
+            for contest_class in contest.classes:
+                print(contest_class)
+                for task in contest_class.tasks:
+                    print(task)
+        
+        return
+    
+    tid = int(tid) - 1
+    tasks = db.session.query(Task)
+    if int(tid) > (len(tasks.all()) - 1):
+        print("The task ID you provided is too high. Aborting.")
+        return
+    
+    fp = io.BytesIO()
+    write_xcsoar_task(fp, tasks[int(tid)])
+    xml = fp.getvalue()
+    print(xml.decode('utf-8'))
+    
+    
 
 #########################
 # Following Sections provides the Silent Wings Viewer interface

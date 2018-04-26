@@ -2,6 +2,7 @@ import requests
 import json
 from datetime import datetime
 from app.model import Contest, ContestClass, Contestant, Pilot, Task, Location, Turnpoint
+# from sqlalchemy.sql.expression import true
 
 
 def list_strepla_contests():
@@ -14,18 +15,19 @@ def list_strepla_contests():
     for contest_row in json_data:
         print("{id}: {name} - {Location}".format(**contest_row))
 
-def get_strepla_contest(competition_id):
+
+def get_strepla_contest_body(competition_id):
     from app.utils import ddb_import
-    contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=360"
+    contest_url = "http://www.strepla.de/scs/ws/competition.ashx?cmd=info&cId=" + str(competition_id) + "&daysPeriod=700"
     # print(contest_url)
     r = requests.get(contest_url)
     # Test if contest is present
     if (len(r.text)) == 2:
-        print("This contest does not exist. Error. Aborting ....")
+        raise ValueError("This contest does not exist: '{}' Aborting.".format(competition_id))
         return
-    
+
     contest_data = json.loads(r.text.encode('utf-8'))[0]
-    
+
     # Process contest location and date info
     parameters = {'end_date': datetime.strptime(contest_data['lastDay'], "%Y-%m-%dT%H:%M:%S"),
                   'name': contest_data['name'],
@@ -41,7 +43,7 @@ def get_strepla_contest(competition_id):
     # print(contest_class_url)
     r = requests.get(contest_class_url)
     contest_class_data = json.loads(r.text.encode('utf-8'))
-    
+
     ddb_entries = ddb_import()
 
     for contest_class_row in contest_class_data:
@@ -67,7 +69,7 @@ def get_strepla_contest(competition_id):
                           'live_track_id': contestant_row['flarm_ID']}
             contestant = Contestant(**parameters)
             contestant.contest_class = contest_class
-            
+
             # Do some checks of the live_track_id
             if parameters['live_track_id']:
                 print("Live_track_id defined via StrePla API")
@@ -97,8 +99,9 @@ def get_strepla_contest(competition_id):
     return contest
 
 
-def get_strepla_class_task(competition_id, contest_class_name):
+def get_strepla_class_tasks(competition_id, contest_class_name):
     # This function reads the tasks from a specific contest and class
+    # TODO: Include example URL
     # TODO: Generate useful error message, if arguments are not provided
     all_task_url = "https://www.strepla.de/scs/ws/results.ashx?cmd=overviewDays&cID=" + str(competition_id) + "&cc=" + str(contest_class_name)
     r = requests.get(all_task_url)
@@ -124,7 +127,7 @@ def get_strepla_class_task(competition_id, contest_class_name):
             # print(task_data_item)
             parameters = {'result_status': all_task_data_item['state'],
                           'task_date': datetime.strptime(all_task_data_item['date'], "%Y-%m-%dT%H:%M:%S"),
-                          'task_distance': task_data_item['distance']}
+                          'task_distance': task_data_item['distance'].replace(' km', '')}
 
             task = Task(**parameters)
 
@@ -133,26 +136,44 @@ def get_strepla_class_task(competition_id, contest_class_name):
                 # print("=== tps ===")
                 # print(tps)
                 if tps['scoring']['type'] == 'LINE':
-                    parameters = {'oz_line': tps['scoring']['width'],
-                                  'type': tps['scoring']['type']}
+                    parameters = {'oz_line': True,
+                                  'type': 'start',
+                                  'oz_radius1': tps['scoring']['width'] / 2}
 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
-                    parameters = {'type': tps['scoring']['type'],
+                    parameters = {'type': 'point',
                                   'oz_radius1': tps['scoring']['radius'],
+                                  'oz_radius2': 0,
                                   'oz_angle1': tps['scoring']['radial1'],
-                                  'oz_angle2': tps['scoring']['radial2']}
+                                  'oz_angle2': tps['scoring']['radial2'],
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                 elif tps['scoring']['type'] == 'KEYHOLE':
-                    parameters = {'type': tps['scoring']['type'],
-                                  'oz_radius1': tps['scoring']['radiusCylinder'],
-                                  'oz_radius2': tps['scoring']['radiusSector'],
-                                  'oz_angle1': tps['scoring']['angle']}
+                    parameters = {'type': 'point',
+                                  'oz_radius1': tps['scoring']['radiusSector'],
+                                  'oz_radius2': tps['scoring']['radiusCylinder'],
+                                  'oz_angle1': tps['scoring']['angle'] / 2,
+                                  'oz_angle2': 180,
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                     # print("Keyhole TP recognizes.")
 
                 elif tps['scoring']['type'] == 'CYLINDER':
-                    parameters = {'type': tps['scoring']['type'],
-                                  'oz_radius1': tps['scoring']['radius']}
+                    parameters = {'type': 'point',
+                                  'oz_radius1': tps['scoring']['radius'],
+                                  'oz_radius2': 0,
+                                  'oz_angle1': 180,
+                                  'oz_angle2': 0,
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                     # print("Cylinder TP recognizes.")
 
@@ -173,6 +194,15 @@ def get_strepla_class_task(competition_id, contest_class_name):
             tasks.append(task)
 
     return tasks
+
+
+def get_strepla_contest_all(cID):
+    contest = get_strepla_contest_body(cID)
+    for contest_class in contest.classes:
+        tasks = get_strepla_class_tasks(cID, contest_class.type)
+        contest_class.tasks = tasks
+
+    return contest
 
 
 # Get classes for a specific contest

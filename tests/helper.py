@@ -82,35 +82,54 @@ def create_simple_contest():
     pilot_18m_1.last_name = "Gaukelei"
     pilot_18m_1.contestant = contestant_18m_1
 
+    # TODO: Move this into seperate function to create task: create_task
     task_1 = Task()
     task_1.no_start = datetime(2015, 9, 3, 10, 0, 0)
-    task_1.task_type = "High speed"
+    task_1.task_type = "High speed"  # Should be aat, rt, ...
     task_1.task_date = date(2005, 9, 3)
-    task_1.contest_class = open_class
+    task_1.contest_class = open_class   # This does not go in new function.
 
     turnpoint_11 = Turnpoint()
     turnpoint_11.name = "Burgfeuerstein"
     turnpoint_11.type = "start"
+    turnpoint_11.oz_radius1 = 3000
     turnpoint_11.point_index = 0
     turnpoint_11.task = task_1
 
-    turnpoint_11 = Turnpoint()
-    turnpoint_11.name = "Bayreuth"
-    turnpoint_11.type = "point"
-    turnpoint_11.point_index = 1
-    turnpoint_11.task = task_1
+    turnpoint_12 = Turnpoint()
+    turnpoint_12.name = "Bayreuth"
+    turnpoint_12.type = "point"
+    turnpoint_12.oz_radius1 = 3000
+    turnpoint_12.oz_radius2 = 0
+    turnpoint_12.oz_angle1 = 180
+    turnpoint_12.oz_angle2 = 0
+    turnpoint_12.oz_type = 'symmetric'
+    turnpoint_12.oz_line = False
+    turnpoint_12.oz_move = False
+    turnpoint_12.oz_reduce = False
+    turnpoint_12.point_index = 1
+    turnpoint_12.task = task_1
 
-    turnpoint_11 = Turnpoint()
-    turnpoint_11.name = "Dobenreuth Hall"
-    turnpoint_11.type = "point"
-    turnpoint_11.point_index = 2
-    turnpoint_11.task = task_1
+    turnpoint_13 = Turnpoint()
+    turnpoint_13.name = "Dobenreuth Hall"
+    turnpoint_13.type = "point"
+    turnpoint_13.oz_radius1 = 10000
+    turnpoint_13.oz_radius2 = 500
+    turnpoint_13.oz_angle1 = 45
+    turnpoint_13.oz_angle2 = 180
+    turnpoint_13.oz_type = 'symmetric'
+    turnpoint_13.oz_line = False
+    turnpoint_13.oz_move = False
+    turnpoint_13.oz_reduce = False
+    turnpoint_13.point_index = 2
+    turnpoint_13.task = task_1
 
-    turnpoint_11 = Turnpoint()
-    turnpoint_11.name = "Burgfeuerstein"
-    turnpoint_11.type = "finish"
-    turnpoint_11.point_index = 3
-    turnpoint_11.task = task_1
+    turnpoint_14 = Turnpoint()
+    turnpoint_14.name = "Burgfeuerstein"
+    turnpoint_14.type = "finish"
+    turnpoint_14.oz_radius1 = 3000
+    turnpoint_14.point_index = 3
+    turnpoint_14.task = task_1
 
     # <Turnpoint None: Burghfeuerstein,0.86904799938202,0.19420191645622,493,3,finish,False,42703.80859375,4.1906170845032,0,previous,3000,0,0.78539816339745,1.0490244309134,0,False,0,False,False,point>
     # <Turnpoint None: Bayreuth,0.87240779399872,0.20317581295967,482,2,point,False,48275.25,0.84343463182449,4.1906170845032,symmetric,3000,0,0.78539816339745,4.0878224372864,0,False,0,False,False,point>
