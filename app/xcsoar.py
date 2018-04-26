@@ -114,29 +114,6 @@ def get_observation_zone_params(turnpoint):
             print("DAEC KEYHOLE")
             params["type"] = "Keyhole"
 
-    # StrePla Start Line
-    elif turnpoint.type == 'LINE' and turnpoint.point_index == 0:
-        print("Recognized Start Line")
-        params["type"] = "Line"
-        params["length"] = int(turnpoint.oz_radius1) * 2
-
-    # StrePla AAT Sector
-    elif turnpoint.type == 'AAT SECTOR':
-        print("Recognized AAT Sector")
-        params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1)
-
-    # StrePla Keyhole
-    elif turnpoint.type == 'KEYHOLE':
-        print("Recognized DAEC Keyhole")
-        params["type"] = "Keyhole"
-
-    # StrePla CYLINDER
-    elif turnpoint.type == 'CYLINDER':
-        print("Recognized CYLINDER")
-        params["type"] = "Cylinder"
-        params["radius"] = int(turnpoint.oz_radius1)
-
     # TODO: Implement FAI turnpoint
     elif turnpoint.type == 'fai':
         print("Recognized FAISector")

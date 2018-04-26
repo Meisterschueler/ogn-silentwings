@@ -137,26 +137,43 @@ def get_strepla_class_tasks(competition_id, contest_class_name):
                 # print(tps)
                 if tps['scoring']['type'] == 'LINE':
                     parameters = {'oz_line': True,
-                                  'type': tps['scoring']['type'],
+                                  'type': 'start',
                                   'oz_radius1': tps['scoring']['width'] / 2}
 
                 elif tps['scoring']['type'] == 'AAT SECTOR':
-                    parameters = {'type': tps['scoring']['type'],
+                    parameters = {'type': 'point',
                                   'oz_radius1': tps['scoring']['radius'],
+                                  'oz_radius2': 0,
                                   'oz_angle1': tps['scoring']['radial1'],
-                                  'oz_angle2': tps['scoring']['radial2']}
+                                  'oz_angle2': tps['scoring']['radial2'],
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                 elif tps['scoring']['type'] == 'KEYHOLE':
-                    parameters = {'type': tps['scoring']['type'],
-                                  'oz_radius1': tps['scoring']['radiusCylinder'],
-                                  'oz_radius2': tps['scoring']['radiusSector'],
-                                  'oz_angle1': tps['scoring']['angle']}
+                    parameters = {'type': 'point',
+                                  'oz_radius1': tps['scoring']['radiusSector'],
+                                  'oz_radius2': tps['scoring']['radiusCylinder'],
+                                  'oz_angle1': tps['scoring']['angle'] / 2,
+                                  'oz_angle2': 180,
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                     # print("Keyhole TP recognizes.")
 
                 elif tps['scoring']['type'] == 'CYLINDER':
-                    parameters = {'type': tps['scoring']['type'],
-                                  'oz_radius1': tps['scoring']['radius']}
+                    parameters = {'type': 'point',
+                                  'oz_radius1': tps['scoring']['radius'],
+                                  'oz_radius2': 0, 
+                                  'oz_angle1': 180,
+                                  'oz_angle2': 0, 
+                                  'oz_type': 'symmetric',
+                                  'oz_line': False,
+                                  'oz_move': False,
+                                  'oz_reduce': False}
 
                     # print("Cylinder TP recognizes.")
 
