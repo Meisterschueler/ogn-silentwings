@@ -40,7 +40,7 @@ setup(
         'manage.py==0.2.10',
         'coreapi==2.3.3',
         'hal-codec==1.0.2',
-        'ogn-client==0.8.2',
+        'ogn-client==0.9.5',
         'aerofiles==0.4.1',
     ],
     extras_require={
