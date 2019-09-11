@@ -41,7 +41,7 @@ setup(
         'coreapi==2.3.3',
         'hal-codec==1.0.2',
         'ogn-client==0.9.5',
-        'aerofiles==0.4.1',
+        'aerofiles==1.0.0',
     ],
     extras_require={
         'dev': [
