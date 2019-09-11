@@ -36,7 +36,7 @@ setup(
         'Flask==0.12.2',
         'Flask-Bootstrap==3.3.7.1',
         'Flask-SQLAlchemy==2.3.2',
-        'Flask-Migrate==2.1.1',
+        'Flask-Migrate==2.5.2',
         'manage.py==0.2.10',
         'coreapi==2.3.3',
         'hal-codec==1.0.2',
