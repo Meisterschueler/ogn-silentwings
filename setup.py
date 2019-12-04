@@ -46,7 +46,7 @@ setup(
     extras_require={
         'dev': [
             'nose==1.3.7',
-            'coveralls==1.8.2',
+            'coveralls==1.9.2',
             'flake8==3.7.8',
         ]
     },
