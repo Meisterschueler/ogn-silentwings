@@ -47,7 +47,7 @@ setup(
         'dev': [
             'nose==1.3.7',
             'coveralls==1.10.0',
-            'flake8==3.7.8',
+            'flake8==3.8.0',
         ]
     },
     zip_safe=False
