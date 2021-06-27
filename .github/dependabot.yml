@@ -1,0 +1,25 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: flake8
+    versions:
+    - 3.8.4
+    - 3.9.0
+  - dependency-name: flask-migrate
+    versions:
+    - 2.6.0
+  - dependency-name: coveralls
+    versions:
+    - 3.0.0
+  - dependency-name: ogn-client
+    versions:
+    - 1.0.1
+  - dependency-name: flask-sqlalchemy
+    versions:
+    - 2.4.4
