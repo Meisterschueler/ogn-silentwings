@@ -33,7 +33,7 @@ setup(
     packages=['ogn.{}'.format(package) for package in find_packages(where='ogn')],
     python_requires='>=3',
     install_requires=[
-        'Flask==1.1.1',
+        'Flask==2.1.3',
         'Flask-Bootstrap==3.3.7.1',
         'Flask-SQLAlchemy==2.4.1',
         'Flask-Migrate==2.5.2',
